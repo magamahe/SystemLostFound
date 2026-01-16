@@ -1,0 +1,57 @@
+[
+  {
+    "id": "18ecc4a8-0c93-4fd4-bb10-9d3078366ddc",
+    "title": "Busco Perro",
+    "description": "Color: negro, collar azul, responde a nombre de Juaco. Zona del Parte Irigoyen",
+    "type": "lost",
+    "phone": "2604556677",
+    "status": "approved",
+    "userId": "bfa99970-38a7-44e2-a21c-89dd0fcf0954",
+    "image": "/uploads/opt-1768590529084.webp",
+    "createdAt": "2026-01-16T19:08:49.358Z"
+  },
+  {
+    "id": "79f2039f-d886-4b4e-82a2-7b49bf4082c2",
+    "title": "Campera",
+    "description": "Color negro, de cuero, talle S, a la salida de Tribunales",
+    "type": "found",
+    "phone": "2604556677",
+    "status": "approved",
+    "userId": "bfa99970-38a7-44e2-a21c-89dd0fcf0954",
+    "image": "/uploads/opt-1768590575986.webp",
+    "createdAt": "2026-01-16T19:09:36.102Z"
+  },
+  {
+    "id": "86ddf274-7767-4e4c-b0c2-bbd12bd589b8",
+    "title": "Llaves perdidas",
+    "description": "Cerca de la plaza",
+    "type": "lost",
+    "phone": "123456",
+    "status": "pending",
+    "userId": "75d177a9-6880-44b9-873a-b31566e22d10",
+    "image": "/uploads/opt-1768592682887.webp",
+    "createdAt": "2026-01-16T19:44:43.070Z"
+  },
+  {
+    "id": "ca2bb206-96f6-4045-a8b6-088a70afda96",
+    "title": "Llaves perdidas",
+    "description": "Cerca de la plaza",
+    "type": "lost",
+    "phone": "123456",
+    "status": "pending",
+    "userId": "75d177a9-6880-44b9-873a-b31566e22d10",
+    "image": "",
+    "createdAt": "2026-01-16T19:45:11.997Z"
+  },
+  {
+    "id": "a13a0884-6558-4cd3-a1bd-bdf56dd45c53",
+    "title": "camperita",
+    "description": "z",
+    "type": "lost",
+    "phone": "123213214312",
+    "status": "pending",
+    "userId": "78c21f82-cb78-4d87-903e-fe43b05a5173",
+    "image": "/uploads/opt-1768593318491.webp",
+    "createdAt": "2026-01-16T19:55:18.686Z"
+  }
+]

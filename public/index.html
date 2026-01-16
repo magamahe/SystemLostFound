@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Encuentra objetos perdidos de forma rápida y segura en nuestra comunidad." />
+    <title>LostFound | Buscador de Objetos Perdidos</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Roboto+Mono:wght@500;700&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              darkBg: "#121212",
+              darkCard: "#1e1e1e",
+              neonPurple: "#bb86fc",
+            },
+            // Agregamos las familias a Tailwind para usarlas como clases
+            fontFamily: {
+              sans: ['Roboto', 'sans-serif'],
+              condensed: ['Roboto Condensed', 'sans-serif'],
+              mono: ['Roboto Mono', 'monospace'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <style>
+      /* Aplicamos Roboto como fuente base */
+      body {
+        font-family: 'Roboto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Estilo para los títulos de las tablas */
+      .font-condensed {
+        font-family: 'Roboto Condensed', sans-serif;
+      }
+
+      /* Estilo para Cód. Cliente */
+      .font-roboto-mono {
+        font-family: 'Roboto Mono', monospace;
+      }
+
+      /* Ribbon */
+      .ribbon {
+        position: absolute;
+        top: 15px;
+        right: -35px;
+        transform: rotate(45deg);
+        width: 150px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 0.75rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Skeleton shimmer */
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      .skeleton-shimmer {
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+      }
+
+      /* Tooltip */
+      [data-tooltip] {
+        position: relative;
+        cursor: pointer;
+      }
+      [data-tooltip]::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0,0,0,0.85);
+        color: #fff;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.7rem;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+        z-index: 50;
+      }
+      [data-tooltip]:hover::after {
+        opacity: 1;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-100 dark:bg-darkBg text-gray-900 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300">
+    <!-- NAV -->
+    <nav class="sticky top-0 z-50 bg-white/80 dark:bg-darkCard/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 px-6 py-4">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="text-2xl font-bold text-neonPurple flex items-center gap-2">
+          <i class="fas fa-search-location"></i>
+          <span>LostFound</span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button id="theme-toggle" type="button" aria-label="Cambiar tema claro u oscuro" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            <i class="fas fa-moon dark:hidden"></i>
+            <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+          </button>
+
+          <div id="user-section" class="flex items-center gap-3">
+            <button id="btn-login" type="button" aria-label="Ingresar al sistema" class="bg-neonPurple text-black px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+              Ingresar
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="py-12 px-6 bg-gradient-to-b from-white to-transparent dark:from-gray-900">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-extrabold mb-4">Perdidos & Encontrados</h1>
+        <span class="block text-xl md:text-2xl font-semibold italic text-neonPurple">Publicá lo que perdiste o encontraste y ayudá a que todo vuelva a su lugar.</span>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-8">
+      <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch"></div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="relative bg-white dark:bg-darkCard border-t border-gray-200 dark:border-gray-800 pt-12 pb-8 px-6 overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-neonPurple/10 blur-3xl rounded-full"></div>
+      </div>
+
+      <div class="relative max-w-7xl mx-auto flex flex-col items-center gap-8">
+        <div class="text-center space-y-2">
+          <p class="font-black text-xl tracking-wide uppercase">MARTÍNEZ HERRERO · MARÍA GABRIELA</p>
+          <p class="text-gray-500 text-sm italic">Proyecto Final Backend M3 · ADA ITW · 2026</p>
+        </div>
+
+        <div class="flex gap-6">
+          <a href="https://github.com/magamahe" target="_blank" rel="noopener noreferrer" data-tooltip="GitHub" class="footer-icon w-12 h-12 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition-all duration-300 shadow-md hover:bg-neonPurple hover:text-black hover:scale-110">
+            <i class="fab fa-github text-xl"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/magamahe" target="_blank" rel="noopener noreferrer" data-tooltip="LinkedIn" class="footer-icon w-12 h-12 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition-all duration-300 shadow-md hover:bg-neonPurple hover:text-black hover:scale-110">
+            <i class="fab fa-linkedin text-xl"></i>
+          </a>
+          <a href="https://www.instagram.com/ma.gabriela.martinez/#" target="_blank" rel="noopener noreferrer" data-tooltip="Instagram" class="footer-icon w-12 h-12 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition-all duration-300 shadow-md hover:bg-neonPurple hover:text-black hover:scale-110">
+            <i class="fab fa-instagram text-xl"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- MODAL -->
+    <div id="modal-container" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
+      <div class="bg-white dark:bg-darkCard w-full max-w-md rounded-3xl p-8 border border-neonPurple/30 shadow-2xl relative">
+        <button id="close-modal" type="button" aria-label="Cerrar ventana" class="absolute top-4 right-4 text-2xl hover:text-red-500">&times;</button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- BOTÓN FLOTANTE -->
+    <button id="floating-add-btn" type="button" aria-label="Agregar nuevo objeto" class="hidden fixed bottom-8 right-8 w-16 h-16 bg-neonPurple text-black rounded-full shadow-2xl flex items-center justify-center text-2xl hover:scale-110 transition-all z-40">
+      <i class="fas fa-plus" aria-hidden="true"></i>
+    </button>
+
+    <!-- JS -->
+    <script src="./js/app.js" defer></script>
+  </body>
+</html>

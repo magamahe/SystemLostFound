@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",             /* Versión de JS moderna */
+    "module": "CommonJS",           /* Estándar que usa Node.js */
+    "rootDir": "./src",             /* Dónde está tu código fuente */
+    "outDir": "./dist",             /* Dónde se guardará el código compilado */
+    "esModuleInterop": true,        /* Permite importar paquetes de JS común */
+    "forceConsistentCasingInFileNames": true, 
+    "strict": true,                 /* Activa el modo estricto de TS para evitar errores */
+    "skipLibCheck": true,           /* Acelera la compilación */
+    "resolveJsonModule": true       /* ¡IMPORTANTE! Permite importar tus archivos .json */
+  },
+  "include": ["src/**/*"],          /* Incluye todo lo que esté en src */
+  "exclude": ["node_modules"]       /* Ignora la carpeta de librerías */
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "78c21f82-cb78-4d87-903e-fe43b05a5173",
+    "username": "admin",
+    "password": "$2b$10$m1zJBJZ5KDyD/jIooLJpWOfe.dBznMN44Nnu8uqvILt9cS4C.kkg2",
+    "role": "admin",
+    "isBanned": false
+  },
+  {
+    "id": "bfa99970-38a7-44e2-a21c-89dd0fcf0954",
+    "username": "gabriela",
+    "password": "$2b$10$9tBh027vhqyqm2HKZz8vguV43FELWLvTNSwYgLN3pj8lsXp6QgpGq",
+    "role": "user",
+    "isBanned": false
+  },
+  {
+    "id": "2813b003-d066-451a-84f4-f939f22a00b2",
+    "username": "pp",
+    "password": "$2b$10$DGbKqIvkYvXUTrdREVtmI.dNhOpZ2IkEj8xm4hZIJt.8mebcAmKiS",
+    "role": "user",
+    "isBanned": false
+  },
+  {
+    "id": "75d177a9-6880-44b9-873a-b31566e22d10",
+    "username": "pepito",
+    "password": "$2b$10$I/S7up9V6dDPNGV5BANNpOmvlxghvIBWZHTguzJByDuEvNOcq3Jj2",
+    "role": "user",
+    "isBanned": false
+  }
+]
