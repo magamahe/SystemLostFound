@@ -181,6 +181,10 @@ function renderGeneralTab(parent) {
     update();
 }
 
+
+// ======================================================
+// 👤 RENDERS DE PESTAÑAS DE USUARIO
+// ======================================================
 function renderMyItemsTab(parent) {
     parent.innerHTML = `<div id="grid-my" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>`;
     const grid = document.getElementById("grid-my");
@@ -193,55 +197,113 @@ function renderMyItemsTab(parent) {
     myFiltered.forEach(item => grid.appendChild(createCard(item, true)));
 }
 
+// ======================================================
+// 👤 RENDERS DE PESTAÑAS DE USUARIO
+// ======================================================
+// ======================================================
+// 🛠️ GESTIÓN DE ANUNCIOS (ADMIN) - CON FILTROS DE ESTADO
+// ======================================================
 function renderAdminItemsTab(parent) {
-    parent.innerHTML = `<div id="grid-admin" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>`;
-    const grid = document.getElementById("grid-admin");
-    
-    // Ordenar: Pendientes primero
-    const sorted = [...allItems].sort((a, b) => (a.status === 'pending' ? -1 : 1));
+    parent.innerHTML = `
+        <div class="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <h2 class="text-xl font-black dark:text-white uppercase italic">Moderación de Anuncios</h2>
+            
+            <div class="flex flex-wrap gap-2">
+                <select id="filter-status-admin" class="p-3 rounded-xl bg-white dark:bg-gray-800 dark:text-white border border-gray-700 outline-none text-xs font-bold uppercase">
+                    <option value="all">🔍 Todos los estados</option>
+                    <option value="pending" selected>⏳ Solo Pendientes</option>
+                    <option value="approved">✅ Aprobados</option>
+                    <option value="rejected">❌ Rechazados</option>
+                </select>
+                
+                <input type="text" id="search-admin" placeholder="Buscar por título o ID..." 
+                       class="p-3 rounded-xl bg-white dark:bg-gray-800 dark:text-white border border-gray-700 outline-none text-xs">
+            </div>
+        </div>
+        <div id="grid-admin" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    `;
 
-    if (sorted.length === 0) {
-        grid.innerHTML = `<p class="col-span-full text-center py-10">Sin anuncios en la base de datos.</p>`;
-        return;
-    }
-    sorted.forEach(item => grid.appendChild(createCard(item, true)));
+    const updateAdminGrid = () => {
+        const grid = document.getElementById("grid-admin");
+        const statusFilter = document.getElementById("filter-status-admin").value;
+        const searchTerm = document.getElementById("search-admin").value.toLowerCase();
+        
+        grid.innerHTML = "";
+
+        const filtered = allItems.filter(i => {
+            const matchesStatus = statusFilter === "all" || i.status === statusFilter;
+            const matchesSearch = i.title.toLowerCase().includes(searchTerm) || 
+                                 String(i.userId).includes(searchTerm) ||
+                                 String(i.id).includes(searchTerm);
+            return matchesStatus && matchesSearch;
+        });
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-full py-20 text-center opacity-40">
+                    <i class="fas fa-folder-open fa-3x mb-4"></i>
+                    <p class="font-black uppercase tracking-widest">No hay anuncios que coincidan</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Renderizamos las tarjetas (canEdit = true porque es admin)
+        filtered.forEach(item => grid.appendChild(createCard(item, true)));
+    };
+
+    // Eventos para actualizar la lista en tiempo real
+    document.getElementById("filter-status-admin").onchange = updateAdminGrid;
+    document.getElementById("search-admin").oninput = updateAdminGrid;
+
+    // Ejecución inicial
+    updateAdminGrid();
 }
-
 // ======================================================
 // 👥 GESTIÓN DE USUARIOS
 // ======================================================
+// ======================================================
+// 👥 GESTIÓN DE USUARIOS (VERSIÓN COMPLETA CON ESTADÍSTICAS)
+// ======================================================
 async function renderAdminUsersTab(parent) {
     const token = localStorage.getItem("token");
+    parent.innerHTML = `<div class="py-20 text-center text-gray-500 animate-pulse font-black uppercase italic">Conectando con la base de datos...</div>`;
+
     try {
         const res = await fetch(`${API_URL}/users`, { headers: { Authorization: `Bearer ${token}` } });
         usersList = await res.json();
 
         parent.innerHTML = `
-            <div class="max-w-7xl mx-auto py-4">
-                <div class="mb-6 flex justify-between items-center">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <h2 class="text-2xl font-black dark:text-white uppercase italic mb-8 flex items-center">
+                    <i class="fas fa-user-shield mr-3 text-neonPurple"></i> Control de Usuarios
+                </h2>
+                <div class="mb-6">
                     <input type="text" id="user-search" placeholder="Buscar por Cód. Cliente o Nombre..." 
-                           class="w-full md:w-1/3 p-4 rounded-2xl bg-white dark:bg-gray-800 dark:text-white border border-gray-700 outline-none">
+                           class="w-full md:w-1/3 p-4 rounded-2xl bg-white dark:bg-gray-800 dark:text-white border border-gray-700 outline-none shadow-sm focus:ring-2 focus:ring-neonPurple/50 transition-all font-medium">
                 </div>
-                <div class="overflow-x-auto rounded-3xl border border-gray-700">
-                    <table class="w-full text-left bg-darkCard">
-                        <thead class="bg-gray-800 text-gray-400 text-[10px] uppercase">
-                            <tr>
-                                <th class="p-5">Cód. Cliente</th>
-                                <th class="p-5">Username</th>
-                                <th class="p-5">Actividad</th>
-                                <th class="p-5">Estado</th>
-                                <th class="p-5 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-tbody" class="divide-y divide-gray-800"></tbody>
-                    </table>
+                <div class="overflow-hidden rounded-3xl border border-gray-700 bg-white dark:bg-darkCard shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-gray-800 text-gray-400 text-[11px] uppercase tracking-[0.15em] font-bold">
+                                <tr>
+                                    <th class="p-5">Cód. Cliente</th>
+                                    <th class="p-5">Username</th>
+                                    <th class="p-5">Actividad</th>
+                                    <th class="p-5">Estado</th>
+                                    <th class="p-5 text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody" class="divide-y divide-gray-100 dark:divide-gray-800"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         `;
         document.getElementById("user-search").oninput = () => updateUsersTable();
         updateUsersTable();
     } catch (error) {
-        parent.innerHTML = `<div class="text-red-500 text-center py-10">Error de conexión</div>`;
+        parent.innerHTML = `<div class="py-20 text-center text-red-500 font-black">Error al conectar con el servidor</div>`;
     }
 }
 
@@ -250,38 +312,78 @@ function updateUsersTable() {
     if (!tbody) return;
 
     const term = document.getElementById("user-search").value.trim().toLowerCase();
-    const filtered = usersList.filter(u => u.role !== 'admin' && (String(u.id).toLowerCase().includes(term) || u.username.toLowerCase().includes(term)));
+    const filtered = usersList.filter(u => 
+        u.role !== 'admin' && (String(u.id).toLowerCase().includes(term) || u.username.toLowerCase().includes(term))
+    );
+
+    // Inicializamos contadores para las métricas globales (la barra inferior)
+    let globalStats = { total: 0, lost: 0, found: 0, pending: 0, approved: 0, rejected: 0 };
 
     tbody.innerHTML = filtered.map(u => {
+        // Relacionamos los items cargados con cada usuario
         const userItems = allItems.filter(item => item.userId === u.id);
-        const stats = {
+        const s = {
             total: userItems.length,
-            pending: userItems.filter(i => i.status === 'pending').length
+            lost: userItems.filter(i => i.type === 'lost').length,
+            found: userItems.filter(i => i.type === 'found').length,
+            pending: userItems.filter(i => i.status === 'pending').length,
+            approved: userItems.filter(i => i.status === 'approved').length,
+            rejected: userItems.filter(i => i.status === 'rejected').length
         };
 
+        // Sumar al contador global para la fila de abajo
+        Object.keys(globalStats).forEach(k => globalStats[k] += s[k]);
+
         return `
-        <tr class="hover:bg-gray-800/20 transition-colors">
-            <td class="p-4 font-mono text-neonPurple font-bold">#${u.id}</td>
-            <td class="p-4 dark:text-white uppercase text-xs font-black italic">${u.username}</td>
+        <tr class="hover:bg-gray-800/20 transition-colors border-b border-gray-800/50">
+            <td class="p-4 text-gray-500 font-mono text-[15px] font-bold uppercase whitespace-nowrap">#${u.id}</td>
+            <td class="p-4 dark:text-white font-black uppercase text-xs italic tracking-wide">${u.username}</td>
             <td class="p-4">
-                <span class="px-2 py-1 bg-gray-700 rounded text-[10px] font-bold text-white">AVISOS: ${stats.total}</span>
-                ${stats.pending > 0 ? `<span class="ml-2 px-2 py-1 bg-yellow-500 rounded text-[10px] font-bold text-black">! ${stats.pending} PEND.</span>` : ''}
-            </td>
-            <td class="p-4 text-[10px] font-black uppercase">
-                <span class="${u.isBanned ? "text-red-500" : "text-green-500"}">${u.isBanned ? "Suspendido" : "Activo"}</span>
+                <div class="flex items-center gap-2">
+                    <span title="Total" class="px-2 py-0.5 rounded bg-gray-700 text-white text-[11px] font-black">${s.total}</span>
+                    <div class="flex items-center gap-1 bg-black/20 p-1 rounded-full px-2">
+                        <span title="Perdidos" class="w-5 h-5 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold">${s.lost}</span>
+                        <span title="Encontrados" class="w-5 h-5 flex items-center justify-center rounded-full bg-green-500 text-white text-[9px] font-bold">${s.found}</span>
+                    </div>
+                    <div class="flex items-center gap-1 bg-black/20 p-1 rounded-full px-2">
+                        <span title="Pendientes" class="w-5 h-5 flex items-center justify-center rounded-full bg-yellow-500 text-black text-[9px] font-bold">${s.pending}</span>
+                        <span title="Aprobados" class="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500 text-white text-[9px] font-bold">${s.approved}</span>
+                        <span title="Rechazados" class="w-5 h-5 flex items-center justify-center rounded-full bg-orange-600 text-white text-[9px] font-bold">${s.rejected}</span>
+                    </div>
+                </div>
             </td>
             <td class="p-4">
+                <span class="px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter ${u.isBanned ? "bg-red-500 text-white" : "bg-green-500/20 text-green-400"}">
+                    ${u.isBanned ? "Suspendido" : "Activo"}
+                </span>
+            </td>
+            <td class="p-4 text-center">
                 <div class="flex justify-center gap-2">
-                    <button onclick="toggleBan('${u.id}')" class="p-2 rounded bg-orange-500/10 text-orange-500 hover:bg-orange-500 hover:text-white transition-all">
-                        <i class="fas ${u.isBanned ? "fa-user-check" : "fa-user-slash"}"></i>
+                    <button onclick="toggleBan('${u.id}')" class="w-8 h-8 flex items-center justify-center rounded-lg transition-all ${u.isBanned ? "bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-white" : "bg-orange-500/10 text-orange-500 hover:bg-orange-500 hover:text-white"}">
+                        <i class="fas ${u.isBanned ? "fa-user-check" : "fa-user-slash"} text-xs"></i>
                     </button>
-                    <button onclick="deleteUser('${u.id}')" class="p-2 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all">
-                        <i class="fas fa-trash"></i>
+                    <button onclick="deleteUser('${u.id}')" class="w-8 h-8 flex items-center justify-center bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all">
+                        <i class="fas fa-trash text-xs"></i>
                     </button>
                 </div>
             </td>
         </tr>`;
-    }).join("");
+    }).join("") + `
+        <tr class="bg-gray-900/80 font-black border-t-2 border-neonPurple/50">
+            <td class="p-5 text-[10px] text-neonPurple uppercase tracking-[0.2em] text-center" colspan="2">Métricas Globales de Red</td>
+            <td class="p-5" colspan="3">
+                <div class="flex flex-wrap items-center gap-6">
+                    <div class="flex flex-col"><span class="text-white text-xl">${globalStats.total}</span><span class="text-[8px] text-gray-500 uppercase">Avisos</span></div>
+                    <div class="h-8 w-[1px] bg-gray-700 mx-2"></div>
+                    <div class="flex flex-col"><span class="text-red-500 text-xl">${globalStats.lost}</span><span class="text-[8px] text-gray-500 uppercase font-bold">Perdidos</span></div>
+                    <div class="flex flex-col"><span class="text-green-500 text-xl">${globalStats.found}</span><span class="text-[8px] text-gray-500 uppercase font-bold">Hallados</span></div>
+                    <div class="h-8 w-[1px] bg-gray-700 mx-2"></div>
+                    <div class="flex flex-col"><span class="text-yellow-500 text-xl">${globalStats.pending}</span><span class="text-[8px] text-gray-500 uppercase font-bold">Pendientes</span></div>
+                    <div class="flex flex-col"><span class="text-blue-500 text-xl">${globalStats.approved}</span><span class="text-[8px] text-gray-500 uppercase font-bold">Aprobados</span></div>
+                    <div class="flex flex-col"><span class="text-orange-600 text-xl">${globalStats.rejected}</span><span class="text-[8px] text-gray-500 uppercase font-bold">Rechazados</span></div>
+                </div>
+            </td>
+        </tr>`;
 }
 
 // ======================================================
