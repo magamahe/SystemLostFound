@@ -260,9 +260,6 @@ function renderAdminItemsTab(parent) {
     updateAdminGrid();
 }
 // ======================================================
-// 👥 GESTIÓN DE USUARIOS
-// ======================================================
-// ======================================================
 // 👥 GESTIÓN DE USUARIOS (VERSIÓN COMPLETA CON ESTADÍSTICAS)
 // ======================================================
 async function renderAdminUsersTab(parent) {
@@ -420,6 +417,73 @@ window.toggleBan = async (id) => {
             updateUsersTable(); 
         }
     } catch (e) { console.error(e); }
+};
+
+window.editItem = async (id) => {
+    // 1. Buscamos el ítem en la lista que ya tenemos cargada
+    const item = allItems.find(i => String(i.id) === String(id));
+    if (!item) return;
+
+    // 2. Abrimos el modal con el formulario de edición
+    openModal();
+    document.getElementById("modal-body").innerHTML = `
+        <h2 class="text-2xl font-black dark:text-white mb-6 uppercase italic">Editar Publicación</h2>
+        <form id="edit-form" class="space-y-4">
+            <input type="text" id="edit-title" value="${item.title}" placeholder="Título" class="w-full p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white outline-none" required>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <select id="edit-type" class="p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white outline-none">
+                    <option value="lost" ${item.type === 'lost' ? 'selected' : ''}>Lo perdí</option>
+                    <option value="found" ${item.type === 'found' ? 'selected' : ''}>Lo encontré</option>
+                </select>
+                <input type="text" id="edit-phone" value="${item.phone}" placeholder="WhatsApp" class="p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white outline-none" required>
+            </div>
+
+            <textarea id="edit-desc" placeholder="Detalles" class="w-full p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white h-24 outline-none" required>${item.description}</textarea>
+            
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-gray-500 uppercase ml-2 italic">Cambiar imagen (opcional)</label>
+                <input type="file" id="edit-image" class="w-full text-xs text-gray-500">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white font-black p-4 rounded-2xl uppercase shadow-lg hover:bg-blue-700 transition-all active:scale-95">Guardar Cambios</button>
+        </form>
+    `;
+
+    // 3. Lógica de guardado
+    document.getElementById("edit-form").onsubmit = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+        
+        const fd = new FormData();
+        fd.append("title", document.getElementById("edit-title").value);
+        fd.append("description", document.getElementById("edit-desc").value);
+        fd.append("type", document.getElementById("edit-type").value);
+        fd.append("phone", document.getElementById("edit-phone").value);
+        
+        const imgFile = document.getElementById("edit-image").files[0];
+        if (imgFile) fd.append("image", imgFile);
+
+        try {
+            const res = await fetch(`${API_URL}/items/${id}`, {
+                method: "PUT",
+                headers: { "Authorization": `Bearer ${token}` },
+                body: fd
+            });
+
+            if (res.ok) {
+                closeModal();
+                await loadItems(true); // Refrescar caché
+                // Detectar qué pestaña estaba abierta para volver ahí
+                const activeTab = document.querySelector('[id^="btn-tab-"].text-neonPurple')?.id.replace('btn-tab-', '') || 'general';
+                renderTab(activeTab);
+            } else {
+                alert("Error al guardar los cambios");
+            }
+        } catch (error) {
+            console.error("Error en PUT:", error);
+        }
+    };
 };
 
 window.deleteItem = async (id) => {
