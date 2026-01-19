@@ -1,67 +1,185 @@
-# 🔍 Lost & Found API - Sistema de Objetos Perdidos
+# 🐾 Perdidos & Encontrados – API Backend / Frontend  
+### *Publicá lo que perdiste o encontraste y ayudá a que todo vuelva a su lugar.*
 
-Trabajo Final para el Módulo de Backend con Node.js y TypeScript. Esta aplicación permite a los usuarios reportar objetos perdidos o encontrados, con un sistema de moderación para administradores.
+Trabajo Final del ***Módulo III Backend*** con Node.js y TypeScript.  
+Este proyecto es el núcleo de una plataforma de reportes comunitarios para la búsqueda de **objetos perdidos y encontrados**, con autenticación, roles, moderación de publicaciones y gestión de imágenes.
 
-## 🌙 Interfaz y Diseño
-- **Tema Oscuro por Defecto:** Siguiendo las preferencias de diseño moderno, la aplicación utiliza una paleta de colores oscuros (`#121212`) para reducir la fatiga visual, con acentos en colores neón para destacar elementos importantes.
-- **Responsivo:** Diseño pensado para ser consultado desde dispositivos móviles y escritorio.
+Está diseñado para ser **rápido, seguro y liviano**, ideal para desplegarse en servicios como **Render, Vercel o Railway**.
 
-## 🛠️ Tecnologías Utilizadas
-- **Backend:** Node.js, Express, TypeScript.
-- **Seguridad:** JSON Web Tokens (JWT) para sesiones y BcryptJS para el hasheo de contraseñas.
-- **Gestión de Archivos:** Multer para la subida y almacenamiento de imágenes.
-- **Base de Datos:** Persistencia en archivos JSON (FileSystem) para cumplir con los requerimientos del módulo.
+---
 
-## 🚀 Instalación y Configuración
+## 🧱 Estructura del Proyecto
 
-1. **Clonar el repositorio y entrar a la carpeta del backend:**
-   ```bash
-   cd backend
-Instalar dependencias:
+```
+🗂️TRABAJO_FINAL_M3/
+│
+├── 📁backend/                    → Backend en Node.js + TypeScript
+│   ├── 📁dist/                   → Código compilado a JavaScript (build)
+│   ├── 📁node_modules/           → Dependencias del proyecto
+│   ├── 📁src/
+│   │   ├── 📁controllers/        → Lógica de negocio de cada recurso
+│   │   │   ├── 📄itemController.ts   → Controlador de publicaciones (items)
+│   │   │   └── 📄userController.ts   → Controlador de usuarios y auth
+│   │   │
+│   │   ├── 📁data/               → Persistencia en archivos JSON
+│   │   │   ├── 📄items.json      → Publicaciones (objetos perdidos/encontrados)
+│   │   │   └── 📄users.json      → Usuarios, roles, estado de baneo
+│   │   │
+│   │   ├── 📁middlewares/        → Middlewares de seguridad y control
+│   │   │   ├── 📄authMiddleware.ts   → Verificación de JWT
+│   │   │   ├── 📄roleMiddleware.ts   → Control de permisos por rol
+│   │   │   ├── 📄errorHandler.ts     → Manejo centralizado de errores
+│   │   │   └── 📄upload.ts           → Configuración de Multer para subida de imágenes
+│   │   │
+│   │   ├── 📁models/             → Interfaces y tipos de datos
+│   │   │   ├── 📄item.ts         → Modelo de publicación
+│   │   │   └── 📄user.ts         → Modelo de usuario
+│   │   │
+│   │   ├── 📁routes/             → Definición de endpoints
+│   │   │   ├── 📄itemRoutes.ts   → Rutas de publicaciones
+│   │   │   └── 📄userRoutes.ts   → Rutas de usuarios y auth
+│   │   │
+│   │   ├── 📁services/           → Servicios reutilizables
+│   │   │   └── 📄dataService.ts  → Acceso seguro a archivos JSON
+│   │   │
+│   │   └── 📄index.ts            → Punto de entrada del servidor
+│   │
+│   ├── .env                    → Variables de entorno
+│   ├── .gitignore              → Archivos ignorados por Git
+│   ├── package.json            → Dependencias y scripts
+│   ├── package-lock.json       → Versionado exacto de dependencias
+│   └── tsconfig.json           → Configuración de TypeScript
+│
+├── 📁public/                     → Frontend (cliente)
+│   ├── 📁css/                    → Estilos
+│   ├── 📁js/                     → Lógica del frontend
+│   │   ├── 📄api.js              → Conexión con la API
+│   │   ├── 📄app.js              → Inicialización general
+│   │   ├── 📄auth.js             → Login y registro
+│   │   ├── 📄items.js            → Gestión de publicaciones
+│   │   └── 📄ui.js               → Interfaz de usuario
+│   │
+│   ├── 📁uploads/                → (Opcional) imágenes locales si no se usa Cloudinary
+│   └── 📄index.html              → Interfaz principal
+│
+└── 📝README.md                   → Documentación del proyecto
+```
 
-Bash
+---
 
-npm install
-Configurar variables de entorno: Crea un archivo .env en la raíz de la carpeta /backend:
+## 🚀 Arquitectura del Backend
 
-Fragmento de código
+Backend construido con:
+- Node.js
+- TypeScript
+- Express
 
+Persistencia mediante archivos JSON usando un **Data Service** centralizado.
+
+Ventajas:
+- Simple de mantener
+- Portable
+- Ideal para proyectos educativos y de portfolio
+- Muy eficiente en despliegues cloud
+
+---
+
+## 📁 Persistencia de Datos
+
+Archivos:
+- **users.json** → usuarios, roles, password hasheada, estado de baneo
+- **items.json** → publicaciones vinculadas al userId
+
+Gestionado por `dataService.ts` con escritura segura.
+
+---
+
+## 🖼️ Gestión de Imágenes
+
+Flujo:
+1. **Multer** recibe la imagen en memoria  
+2. **Sharp**:
+   - Resize máx 800px
+   - Conversión a .webp
+   - Reducción de peso hasta 80%
+3. **Cloudinary** sube la imagen
+4. Eliminación automática de imágenes viejas
+
+---
+
+## 🔐 Seguridad
+
+- **JWT** para autenticación
+- **BCryptJS** para contraseñas
+- Sistema de roles (user / admin)
+- Sistema de baneo inteligente
+
+---
+
+## ⚙️ Variables de Entorno
+
+```env
 PORT=3000
-JWT_SECRET=tu_clave_secreta_aqui
-Iniciar en modo desarrollo:
+JWT_SECRET=tu_secreto_super_seguro
+CLOUDINARY_CLOUD_NAME=tu_nombre
+CLOUDINARY_API_KEY=tu_key
+CLOUDINARY_API_SECRET=tu_secret
+```
 
-Bash
+---
 
+## 🛠️ Instalación
+
+```bash
+cd backend
+npm install
 npm run dev
-🔑 Gestión de Roles (Admin vs User)
-El sistema cuenta con una distinción clara de permisos:
+```
 
-Usuario: Puede registrarse, iniciar sesión, subir objetos y editar sus propias publicaciones.
+---
 
-Admin: Posee permisos exclusivos para aprobar o rechazar publicaciones (Endpoint PATCH /items/:id/status).
+## 🛣️ API
 
-Instrucciones para la corrección: Para probar las funcionalidades de administrador, registre un usuario normalmente y luego modifique manualmente el archivo backend/data/users.json, cambiando el valor "role": "user" por "role": "admin" en su registro.
+Header:
+```
+Authorization: Bearer <token>
+```
 
-🛣️ API Endpoints
-Usuarios
-POST /users/register: Registro de nuevos usuarios (Case-insensitive).
+### Auth
+- POST /api/auth/register  
+- POST /api/auth/login  
 
-POST /users/login: Inicio de sesión y entrega de Token JWT.
+### Items
+- GET /api/items  
+- POST /api/items  
+- PUT /api/items/:id  
+- PATCH /api/items/:id/status  
+- DELETE /api/items/:id  
 
-Objetos (Items)
-GET /items: Lista todos los objetos (Público).
+### Usuarios
+- GET /api/users  
+- PATCH /api/users/:id/ban  
+- DELETE /api/users/:id  
 
-POST /items: Publicar un objeto (Requiere Token + Imagen).
+---
 
-PUT /items/:id: Editar datos de un objeto propio.
+## 👩‍💻 Autora
+* **MARTINEZ HERRERO, Maria Gabriela**
+* Data Analyst | Frontend & Backend Developer 
+<p>
+  <a href="https://github.com/magamahe" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" width="32"/>
+  </a>
+  &nbsp;
+  <a href="https://linkedin.com/in/magamahe" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="32"/>
+  </a>
+  &nbsp;
+  <a href="mailto:magamahe@gmail.com">
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" width="32"/>
+  </a>
+</p>
+ 
+---
 
-PATCH /items/:id/status: Moderación de estado (Solo Admin).
-
-DELETE /items/:id: Eliminar una publicación.
-
-📁 Estructura del Proyecto
-/backend/src: Código fuente en TypeScript.
-
-/backend/data: Almacenamiento de archivos JSON.
-
-/public/uploads: Repositorio de imágenes subidas por los usuarios.
+⭐ Si te gusta el proyecto, ¡no olvides dejar una estrella!
