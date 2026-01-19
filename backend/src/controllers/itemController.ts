@@ -3,33 +3,46 @@ import { DataService } from '../services/dataService';
 import { Item } from '../models/item';
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
-import path from 'path';
-import fs from 'fs';
+import { v2 as cloudinary } from 'cloudinary';
+// @ts-ignore
+import streamifier from 'streamifier';
 
-// --- FUNCIÓN AUXILIAR PARA OPTIMIZAR IMÁGENES ---
-// La creamos aparte para no repetir código en create y update
-const optimizeImage = async (file: any) => {
-    const fileName = `opt-${Date.now()}.webp`;
-    
-    // Ruta corregida: sube un nivel para salir de backend y entrar a public
-    const uploadDir = path.join(process.cwd(), '..', 'public', 'uploads');
-    const outputPath = path.join(uploadDir, fileName);
+// --- CONFIGURACIÓN DE CLOUDINARY ---
+// Usamos process.env para que en Render solo tengas que cargar los valores en la pestaña "Environment"
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET 
+});
 
-    // Crear la carpeta si no existe
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-    }
+// Función para extraer el 'public_id' de una URL de Cloudinary
+const getPublicIdFromUrl = (url: string) => {
+    const parts = url.split('/');
+    const lastPart = parts[parts.length - 1]; // Ej: "imagen.webp"
+    const folder = "trabajo_final_m3"; // El nombre de tu carpeta configurado arriba
+    const publicId = lastPart.split('.')[0]; // Quitamos la extensión (.webp)
+    return `${folder}/${publicId}`;
+};
 
-    // --- LA CLAVE ---
-    // Usamos 'file.buffer' porque Multer ya no genera 'file.path'
-    await sharp(file.buffer) 
+// --- FUNCIÓN PARA OPTIMIZAR Y SUBIR A LA NUBE ---
+const optimizeAndUpload = async (file: any): Promise<string> => {
+    // 1. Optimizamos con Sharp desde el buffer de memoria
+    const optimizedBuffer = await sharp(file.buffer)
         .resize(800)
         .webp({ quality: 80 })
-        .toFile(outputPath);
+        .toBuffer();
 
-    console.log("✅ Imagen optimizada única creada con éxito.");
-
-    return `/uploads/${fileName}`;
+    // 2. Subimos el Buffer a Cloudinary mediante un Stream
+    return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: "trabajo_final_m3" },
+            (error, result) => {
+                if (result) resolve(result.secure_url); 
+                else reject(error);
+            }
+        );
+        streamifier.createReadStream(optimizedBuffer).pipe(uploadStream);
+    });
 };
 
 // --- CREATE ITEM ---
@@ -40,8 +53,7 @@ export const createItem = async (req: any, res: Response) => {
 
         let imagePath = '';
         if (req.file) {
-            // Usamos nuestra función de optimización
-            imagePath = await optimizeImage(req.file);
+            imagePath = await optimizeAndUpload(req.file);
         }
 
         const newItem: Item = {
@@ -51,7 +63,7 @@ export const createItem = async (req: any, res: Response) => {
             type,
             phone,
             status: "pending",
-            userId: req.user.id,
+            userId: req.user.id, // Tu información guardada: El código del cliente es importante
             image: imagePath,
             createdAt: new Date().toISOString()
         };
@@ -77,18 +89,20 @@ export const getItems = async (req: Request, res: Response) => {
 
 // --- UPDATE ITEM STATUS (ADMIN) ---
 export const updateItemStatus = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { status } = req.body;
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const items = await DataService.getItems();
+        const index = items.findIndex(i => i.id === id);
 
-    const items = await DataService.getItems();
-    const index = items.findIndex(i => i.id === id);
+        if (index === -1) return res.status(404).json({ message: "Item no encontrado" });
 
-    if (index === -1) return res.status(404).json({ message: "Item no encontrado" });
-
-    items[index].status = status;
-    await DataService.saveItems(items);
-
-    res.json({ message: `Item ${status} con éxito`, item: items[index] });
+        items[index].status = status;
+        await DataService.saveItems(items);
+        res.json({ message: `Item ${status} con éxito`, item: items[index] });
+    } catch (error) {
+        res.status(500).json({ message: "Error al actualizar status" });
+    }
 };
 
 // --- UPDATE ITEM (OWNER/ADMIN) ---
@@ -100,89 +114,67 @@ export const updateItem = async (req: any, res: Response) => {
 
         if (index === -1) return res.status(404).json({ message: "Item no encontrado" });
 
-        // ... (tus validaciones de seguridad de siempre)
+        // Verificar permisos
+        if (items[index].userId !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ message: "No autorizado" });
+        }
 
         let imagePath = items[index].image;
 
+        // --- SI EL USUARIO SUBIÓ UNA NUEVA FOTO ---
         if (req.file) {
-            // 1. SI YA TENÍA UNA IMAGEN, LA BORRAMOS DEL DISCO
-            if (items[index].image) {
-                // Construimos la ruta hacia el archivo viejo
-                // Recuerda que items[index].image empieza con "/uploads/..."
-                const oldImagePath = path.join(process.cwd(), '..', 'public', items[index].image);
-                
+            // 1. Borrar la imagen anterior de Cloudinary si existe
+            if (items[index].image && items[index].image.includes("cloudinary.com")) {
                 try {
-                    if (fs.existsSync(oldImagePath)) {
-                        fs.unlinkSync(oldImagePath);
-                        console.log("Imagen anterior eliminada para ahorrar espacio");
-                    }
+                    const oldPublicId = getPublicIdFromUrl(items[index].image);
+                    await cloudinary.uploader.destroy(oldPublicId);
+                    console.log("Imagen anterior eliminada de Cloudinary:", oldPublicId);
                 } catch (err) {
-                    console.error("No se pudo borrar la imagen vieja:", err);
+                    console.error("Error al borrar imagen vieja:", err);
+                    // No bloqueamos el proceso si falla el borrado de la vieja
                 }
             }
-
-            // 2. OPTIMIZAMOS Y GUARDAMOS LA NUEVA
-            imagePath = await optimizeImage(req.file);
+            // 2. Optimizar y subir la nueva foto
+            imagePath = await optimizeAndUpload(req.file);
         }
 
-        // 3. ACTUALIZAMOS EL JSON
         items[index] = {
             ...items[index],
-            ...req.body,
+            ...req.body, // Aquí vienen title, description, type, phone
             image: imagePath,
-            status: 'pending' 
+            status: 'pending' // Volver a pendiente para revisión si se edita
         };
 
         await DataService.saveItems(items);
-        res.json({ message: "Item actualizado", item: items[index] });
+        res.json({ message: "Item actualizado correctamente", item: items[index] });
     } catch (error) {
+        console.error("Error al actualizar:", error);
         res.status(500).json({ message: "Error al actualizar" });
     }
 };
-
-// --- DELETE ITEM ---// --- DELETE ITEM (CORRECCIÓN DE RUTA DE CARPETA) ---
+// --- DELETE ITEM ---
 export const deleteItem = async (req: any, res: Response) => {
     try {
         const { id } = req.params;
         let items = await DataService.getItems();
-
         const item = items.find(i => i.id === id);
+
         if (!item) return res.status(404).json({ message: "Item no encontrado" });
 
         if (item.userId !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: "No tienes permiso" });
         }
 
-        if (item.image) {
-            // 1. Limpiamos la barra inicial: "/uploads/..." -> "uploads/..."
-            const cleanImagePath = item.image.startsWith('/') ? item.image.substring(1) : item.image;
-
-            // 2. CORRECCIÓN CLAVE: 
-            // Si el proceso corre en /backend, debemos subir un nivel para llegar a /public
-            const fullImagePath = path.join(process.cwd(), '..', 'public', cleanImagePath);
-
-            console.log("Intentando borrar en ruta corregida:", fullImagePath);
-
-            if (fs.existsSync(fullImagePath)) {
-                fs.unlinkSync(fullImagePath);
-                console.log("✅ ¡FOTO ELIMINADA CON ÉXITO!");
-            } else {
-                // Si aún falla, probamos sin el '..' por si acaso
-                const fallbackPath = path.join(process.cwd(), 'public', cleanImagePath);
-                if (fs.existsSync(fallbackPath)) {
-                    fs.unlinkSync(fallbackPath);
-                    console.log("✅ ¡FOTO ELIMINADA CON ÉXITO (Ruta alternativa)!");
-                } else {
-                    console.log("❌ Sigue sin encontrarse. Rutas probadas:");
-                    console.log("1:", fullImagePath);
-                    console.log("2:", fallbackPath);
-                }
-            }
+        // --- NUEVO: BORRAR IMAGEN DE CLOUDINARY ---
+        if (item.image && item.image.includes("cloudinary.com")) {
+            const publicId = getPublicIdFromUrl(item.image);
+            await cloudinary.uploader.destroy(publicId);
+            console.log("Imagen borrada de Cloudinary:", publicId);
         }
-
+        
         items = items.filter(i => i.id !== id);
         await DataService.saveItems(items);
-        res.json({ message: "Item eliminado correctamente" });
+        res.json({ message: "Item e imagen eliminados correctamente" });
     } catch (error) {
         console.error("Error al eliminar:", error);
         res.status(500).json({ message: "Error al eliminar el item" });

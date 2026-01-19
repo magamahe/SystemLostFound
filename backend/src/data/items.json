@@ -1,0 +1,57 @@
+[
+  {
+    "id": "670f0776-3a15-4cc6-a8b7-1c450e21e1b2",
+    "title": "camperita",
+    "description": "En el hall principal de la Universidad de Cuyo. Color negra de cuero talle S",
+    "type": "found",
+    "phone": "23456789",
+    "status": "approved",
+    "userId": "912d973f-fb34-4d29-9e32-732356692569",
+    "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768851690/trabajo_final_m3/kaooyp2pgwakozhfxm41.webp",
+    "createdAt": "2026-01-19T19:41:30.893Z"
+  },
+  {
+    "id": "ea76cade-6d3d-447c-a71f-a218c635a607",
+    "title": "gato",
+    "description": "Gato bebé blanco en la zona del Parque Mariano Moreno. ",
+    "type": "lost",
+    "phone": "1211324",
+    "status": "rejected",
+    "userId": "912d973f-fb34-4d29-9e32-732356692569",
+    "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768851739/trabajo_final_m3/nftrwauyqdm3lgrzg4aw.webp",
+    "createdAt": "2026-01-19T19:42:19.322Z"
+  },
+  {
+    "id": "f3628d16-cdc9-479f-82e8-286f1dd4d195",
+    "title": "Cuadrilla para Cosecha",
+    "description": "Necesito para el dia lunes, zona Rama Caida. Llamar urgente",
+    "type": "lost",
+    "phone": "1211324",
+    "status": "pending",
+    "userId": "912d973f-fb34-4d29-9e32-732356692569",
+    "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768852061/trabajo_final_m3/hqx2kpo0ijumzbgxgm75.webp",
+    "createdAt": "2026-01-19T19:43:22.188Z"
+  },
+  {
+    "id": "e9ab0b55-c2b1-482e-bfe2-62e5d4f1ea73",
+    "title": "bicicleta",
+    "description": "Azul, robada en Av 9de Julio al 50, marca Zenith m40",
+    "type": "lost",
+    "phone": "1232423",
+    "status": "approved",
+    "userId": "30464a1a-a9c7-4806-a289-8a70b02fc2bd",
+    "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768852173/trabajo_final_m3/wiacwgzfqc2sqr3te0pf.webp",
+    "createdAt": "2026-01-19T19:49:33.436Z"
+  },
+  {
+    "id": "ed566e89-e74c-497e-af85-ffdbeeb54b4b",
+    "title": "Rueda",
+    "description": "Llanta con goma rod 40, encontrada en calle Florida 50 en la acequia",
+    "type": "found",
+    "phone": "12121212",
+    "status": "rejected",
+    "userId": "30464a1a-a9c7-4806-a289-8a70b02fc2bd",
+    "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768852253/trabajo_final_m3/hq2e8azf3iocjowecsbw.webp",
+    "createdAt": "2026-01-19T19:50:35.650Z"
+  }
+]

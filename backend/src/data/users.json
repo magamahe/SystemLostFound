@@ -1,0 +1,30 @@
+[
+  {
+    "id": "816ac34a-fb82-461c-9658-6ed55cedaf0a",
+    "username": "admin",
+    "password": "$2a$10$mS4nT124IgEiXDL0ukb82ek47VlVqBX3Kwet33KyzBuT2T3fX4Eq.",
+    "role": "admin",
+    "isBanned": false
+  },
+  {
+    "id": "912d973f-fb34-4d29-9e32-732356692569",
+    "username": "gaby",
+    "password": "$2a$10$KcGdwhsDMfaLsUHM4IyNL.UvAHEd.oVphf5orp70iVz.PGU2RKIwq",
+    "role": "user",
+    "isBanned": false
+  },
+  {
+    "id": "30464a1a-a9c7-4806-a289-8a70b02fc2bd",
+    "username": "pepe",
+    "password": "$2a$10$S7ZC2aoDWtb9CvNBsIJZsubhtpsiQm4OhnSydaU0dW/GjKvTXCp.i",
+    "role": "user",
+    "isBanned": false
+  },
+  {
+    "id": "6e5728d4-d2f4-4921-83ff-4b50193eaa83",
+    "username": "fafa",
+    "password": "$2a$10$OgcvK4zy9EnZw/.uoJrE/O3quH0urtQ/EKswRfQdztaETvYjfmKUu",
+    "role": "user",
+    "isBanned": false
+  }
+]

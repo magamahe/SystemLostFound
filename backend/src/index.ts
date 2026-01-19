@@ -3,38 +3,51 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
 
-// Importación de Rutas
+dotenv.config();
+
+import { v2 as cloudinary } from 'cloudinary';
 import userRoutes from './routes/userRoutes';
 import itemRoutes from './routes/itemRoutes';
-
-// Importación de Middlewares de Error
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler';
 
-// Configuración
-dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000; 
 
-// 1. Middlewares iniciales
+// --- CONFIGURACIÓN DE CLOUDINARY ---
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET 
+});
+
+// 2. Middlewares
 app.use(cors());
-app.use(express.json()); // Para poder leer el body en formato JSON
+app.use(express.json());
 
-// 2. Archivos estáticos (Fotos y Frontend)
-// Esto sirve para que al entrar a /uploads/nombre.jpg se vea la imagen
-app.use('/uploads', express.static(path.join(__dirname, '../../public/uploads')));
-app.use(express.static(path.join(__dirname, '../../public')));
+// 3. Definición de Rutas de la API (Deben ir ANTES de los estáticos del front)
+app.use('/api/users', userRoutes);
+app.use('/api/items', itemRoutes);
 
-// 3. Definición de Rutas (Endpoints)
-app.use('/users', userRoutes);
-app.use('/items', itemRoutes);
+// 4. Archivos estáticos y Frontend
+const publicPath = path.resolve(process.cwd(), '..', 'public');
+app.use(express.static(publicPath));
 
-// 4. Manejo de rutas no encontradas (404)
+// Soporte para imágenes locales (si las hubiera)
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'public/uploads')));
+
+// --- ¡ESTO ES VITAL! ---
+// Si el usuario entra a una ruta que no es de la API, le servimos el index.html
+// Esto permite que el frontend maneje sus propias rutas sin dar 404
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(publicPath, 'index.html'));
+  }
+});
+
+// 5. Manejo de errores
 app.use(notFoundHandler);
-
-// 5. Manejador de errores global (Debe ser el ÚLTIMO)
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`📁 Imágenes servidas en http://localhost:${PORT}/uploads`);
+  console.log(`🚀 Servidor y Frontend listos en puerto ${PORT}`);
 });
