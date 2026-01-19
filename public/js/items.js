@@ -207,6 +207,60 @@ function renderMyItemsTab(parent) {
     });
 }
 
+
+// ======================================================
+// 🛠️ GESTIÓN DE ANUNCIOS (ADMIN) 
+// ======================================================
+function renderAdminItemsTab(parent) {
+    parent.innerHTML = `
+        <div class="mb-8 flex flex-col md:flex-row gap-4">
+            <h2 class="text-xl font-black dark:text-white uppercase italic">Moderación de Anuncios</h2>
+        </div>
+        <div id="grid-admin" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    `;
+
+    const grid = document.getElementById("grid-admin");
+    
+    // El Admin ve absolutamente todo, especialmente lo 'pending'
+    const pendingItems = allItems.filter(i => i.status === "pending");
+    const otherItems = allItems.filter(i => i.status !== "pending");
+
+    if (allItems.length === 0) {
+        grid.innerHTML = `<p class="col-span-full text-center py-10 text-gray-500">No hay anuncios en la base de datos.</p>`;
+        return;
+    }
+
+    // Primero mostramos lo que requiere atención inmediata
+    pendingItems.forEach(item => grid.appendChild(createCard(item, true)));
+    otherItems.forEach(item => grid.appendChild(createCard(item, true)));
+}
+
+// Agregar también esta función para que los botones de la tarjeta funcionen
+window.updateStatus = async (id, newStatus) => {
+    const token = localStorage.getItem("token");
+    try {
+        const res = await fetch(`${API_URL}/items/${id}/status`, {
+            method: "PATCH",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        if (res.ok) {
+            await loadItems();
+            renderTab("admin-items"); // Refrescar la pestaña de admin
+        } else {
+            alert("Error al actualizar el estado");
+        }
+    } catch (e) {
+        console.error("Error en updateStatus:", e);
+    }
+};
+
+
+
 // ======================================================
 // 👥 GESTIÓN DE USUARIOS (VERSIÓN CON ESTADÍSTICAS Y TOTALES)
 // ======================================================
