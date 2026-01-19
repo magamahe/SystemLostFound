@@ -420,17 +420,14 @@ window.toggleBan = async (id) => {
 };
 
 window.editItem = async (id) => {
-    // 1. Buscamos el ítem en la lista que ya tenemos cargada
     const item = allItems.find(i => String(i.id) === String(id));
     if (!item) return;
 
-    // 2. Abrimos el modal con el formulario de edición
     openModal();
     document.getElementById("modal-body").innerHTML = `
         <h2 class="text-2xl font-black dark:text-white mb-6 uppercase italic">Editar Publicación</h2>
         <form id="edit-form" class="space-y-4">
             <input type="text" id="edit-title" value="${item.title}" placeholder="Título" class="w-full p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white outline-none" required>
-            
             <div class="grid grid-cols-2 gap-4">
                 <select id="edit-type" class="p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white outline-none">
                     <option value="lost" ${item.type === 'lost' ? 'selected' : ''}>Lo perdí</option>
@@ -438,68 +435,63 @@ window.editItem = async (id) => {
                 </select>
                 <input type="text" id="edit-phone" value="${item.phone}" placeholder="WhatsApp" class="p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white outline-none" required>
             </div>
-
-            <textarea id="edit-desc" placeholder="Detalles" class="w-full p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white h-24 outline-none" required>${item.description}</textarea>
-            
-            <div class="space-y-2">
-                <label class="text-[10px] font-bold text-gray-500 uppercase ml-2 italic">Cambiar imagen (opcional)</label>
-                <input type="file" id="edit-image" class="w-full text-xs text-gray-500">
-            </div>
-
-            <button type="submit" class="w-full bg-blue-600 text-white font-black p-4 rounded-2xl uppercase shadow-lg hover:bg-blue-700 transition-all active:scale-95">Guardar Cambios</button>
+            <textarea id="edit-desc" class="w-full p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white h-24 outline-none" required>${item.description}</textarea>
+            <input type="file" id="edit-image" class="w-full text-xs text-gray-500">
+            <button type="submit" class="w-full bg-blue-600 text-white font-black p-4 rounded-2xl uppercase shadow-lg hover:bg-blue-700 transition-all">Guardar Cambios</button>
         </form>
     `;
 
-    // 3. Lógica de guardado
     document.getElementById("edit-form").onsubmit = async (e) => {
         e.preventDefault();
-        const token = localStorage.getItem("token");
-        
         const fd = new FormData();
         fd.append("title", document.getElementById("edit-title").value);
         fd.append("description", document.getElementById("edit-desc").value);
         fd.append("type", document.getElementById("edit-type").value);
         fd.append("phone", document.getElementById("edit-phone").value);
-        
         const imgFile = document.getElementById("edit-image").files[0];
         if (imgFile) fd.append("image", imgFile);
 
-        try {
-            const res = await fetch(`${API_URL}/items/${id}`, {
-                method: "PUT",
-                headers: { "Authorization": `Bearer ${token}` },
-                body: fd
-            });
+        const res = await fetch(`${API_URL}/items/${id}`, {
+            method: "PUT",
+            headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` },
+            body: fd
+        });
 
-            if (res.ok) {
-                closeModal();
-                await loadItems(true); // Refrescar caché
-                // Detectar qué pestaña estaba abierta para volver ahí
-                const activeTab = document.querySelector('[id^="btn-tab-"].text-neonPurple')?.id.replace('btn-tab-', '') || 'general';
-                renderTab(activeTab);
-            } else {
-                alert("Error al guardar los cambios");
-            }
-        } catch (error) {
-            console.error("Error en PUT:", error);
+        if (res.ok) {
+            // AQUÍ EL CARTELITO:
+            alert("✅ Cambios guardados. El anuncio volverá a ser revisado por un administrador.");
+            closeModal();
+            await loadItems(true);
+            const activeTab = document.querySelector('[id^="btn-tab-"].text-neonPurple')?.id.replace('btn-tab-', '') || 'general';
+            renderTab(activeTab);
         }
     };
 };
 
 window.deleteItem = async (id) => {
-    if (!confirm("¿Eliminar publicación?")) return;
-    const token = localStorage.getItem("token");
+    // Cartel de confirmación antes de proceder
+    const confirmar = confirm("⚠️ ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.");
+    
+    if (!confirmar) return; // Si cancela, no hace nada.
+
     try {
         const res = await fetch(`${API_URL}/items/${id}`, {
             method: "DELETE",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
         });
+
         if (res.ok) {
+            alert("🗑️ Publicación eliminada correctamente.");
             await loadItems(true);
             const activeTab = document.querySelector('[id^="btn-tab-"].text-neonPurple')?.id.replace('btn-tab-', '') || 'general';
             renderTab(activeTab);
+        } else {
+            alert("No se pudo eliminar la publicación. Inténtalo de nuevo.");
         }
-    } catch (e) { console.error(e); }
+    } catch (e) {
+        console.error(e);
+        alert("Error de conexión al intentar eliminar.");
+    }
 };
 
 export function showAddForm() {
