@@ -53,5 +53,16 @@
     "userId": "30464a1a-a9c7-4806-a289-8a70b02fc2bd",
     "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768852253/trabajo_final_m3/hq2e8azf3iocjowecsbw.webp",
     "createdAt": "2026-01-19T19:50:35.650Z"
+  },
+  {
+    "id": "7bcc5f9a-c60b-42dc-959f-424d8631c481",
+    "title": "Llaves perdidas",
+    "description": "Cerca de la plaza",
+    "type": "lost",
+    "phone": "123456",
+    "status": "pending",
+    "userId": "ed52e3c1-aebf-4d15-a018-4b5708b1ae08",
+    "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768863391/trabajo_final_m3/aulufhb525pzuck6pkuw.webp",
+    "createdAt": "2026-01-19T22:56:31.297Z"
   }
 ]

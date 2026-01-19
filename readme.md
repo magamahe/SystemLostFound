@@ -6,6 +6,8 @@ Este proyecto es el núcleo de una plataforma de reportes comunitarios para la b
 
 Está diseñado para ser **rápido, seguro y liviano**, ideal para desplegarse en servicios como **Render, Vercel o Railway**.
 
+
+DEPLOY RENDER: https://systemlostfound.onrender.com/
 ---
 
 ## 🧱 Estructura del Proyecto
@@ -146,8 +148,8 @@ Authorization: Bearer <token>
 ```
 
 ### Auth
-- POST /api/auth/register  
-- POST /api/auth/login  
+- POST /api/users/register  
+- POST /api/users/login  
 
 ### Items
 - GET /api/items  
@@ -156,7 +158,7 @@ Authorization: Bearer <token>
 - PATCH /api/items/:id/status  
 - DELETE /api/items/:id  
 
-### Usuarios
+### Usuarios (solo ADMIN)
 - GET /api/users  
 - PATCH /api/users/:id/ban  
 - DELETE /api/users/:id  

@@ -26,5 +26,12 @@
     "password": "$2a$10$OgcvK4zy9EnZw/.uoJrE/O3quH0urtQ/EKswRfQdztaETvYjfmKUu",
     "role": "user",
     "isBanned": false
+  },
+  {
+    "id": "ed52e3c1-aebf-4d15-a018-4b5708b1ae08",
+    "username": "pepito",
+    "password": "$2a$10$esbWApkC1QMhCkhCBur5IuL9z5EXTEP/EZDlANQIwHhL8YK/antTm",
+    "role": "user",
+    "isBanned": false
   }
 ]

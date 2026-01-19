@@ -55,3 +55,30 @@ export function renderFloatingButton(user, action) {
   
   document.body.appendChild(btn);
 }
+
+// 1. Lógica de inicialización (Corre apenas carga la web)
+const initTheme = () => {
+    const savedTheme = localStorage.getItem('theme');
+    
+    // Si nunca entró o eligió dark, ponemos dark
+    if (!savedTheme || savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+};
+
+// 2. La función que dispara el botón
+window.toggleTheme = () => {
+    const html = document.documentElement;
+    const isDark = html.classList.toggle('dark'); // Quita o pone la clase 'dark'
+    
+    // Guardamos la elección para la próxima visita
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    
+    console.log("Modo oscuro:", isDark);
+};
+
+// Ejecutamos la inicialización
+initTheme();
