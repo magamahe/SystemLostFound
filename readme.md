@@ -1,13 +1,58 @@
-# 🐾 Perdidos & Encontrados – API Backend / Frontend  
-### *Publicá lo que perdiste o encontraste y ayudá a que todo vuelva a su lugar.*
 
+---
+<div align="center">
+
+  <img src="./public/uploads/presentacion.webp" alt="Logo Perdidos y Encontrados" width="100%">
+
+  <h1>🐾 Perdidos & Encontrados</h1>
+  <h2>— API Backend / Frontend —</h2>
+  
+  <p>
+    <i>"Publicá lo que perdiste o encontraste y ayudá a que todo vuelva a su lugar."</i>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Backend-Node.js-green" alt="Node.js">
+    <img src="https://img.shields.io/badge/Language-TypeScript-blue" alt="TypeScript">
+    <img src="https://img.shields.io/badge/Database-JSON-yellow" alt="JSON">
+    <img src="https://img.shields.io/badge/Deploy-Render-orange" alt="Render">
+  </p>
+
+  <h4>
+    🚀 <a href="https://systemlostfound.onrender.com">Ver Demo en Vivo</a>
+  </h4>
+
+</div>
+
+---
 Trabajo Final del ***Módulo III Backend*** con Node.js y TypeScript.  
 Este proyecto es el núcleo de una plataforma de reportes comunitarios para la búsqueda de **objetos perdidos y encontrados**, con autenticación, roles, moderación de publicaciones y gestión de imágenes.
 
 Está diseñado para ser **rápido, seguro y liviano**, ideal para desplegarse en servicios como **Render, Vercel o Railway**.
 
+---
 
-DEPLOY RENDER: https://systemlostfound.onrender.com
+
+## 📍 Índice
+- [📍 Índice](#-índice)
+- [🧱 Estructura del Proyecto](#-estructura-del-proyecto)
+- [volver arriba ↑](#volver-arriba-)
+- [🚀 Arquitectura del Backend](#-arquitectura-del-backend)
+- [volver arriba ↑](#volver-arriba--1)
+- [📁 Persistencia de Datos](#-persistencia-de-datos)
+- [🖼️ Gestión de Imágenes](#️-gestión-de-imágenes)
+- [volver arriba ↑](#volver-arriba--2)
+- [🔐 Seguridad](#-seguridad)
+- [volver arriba ↑](#volver-arriba--3)
+- [⚙️ Variables de Entorno](#️-variables-de-entorno)
+- [🛠️ Instalación](#️-instalación)
+- [volver arriba ↑](#volver-arriba--4)
+- [🛣️ API](#️-api)
+  - [Auth](#auth)
+  - [Items](#items)
+  - [Usuarios (solo ADMIN)](#usuarios-solo-admin)
+    - [*📋 Ejemplo de Respuesta (POST /api/users/login)*](#-ejemplo-de-respuesta-post-apiuserslogin)
+- [👩‍💻 Autora](#-autora)
 ---
 
 ## 🧱 Estructura del Proyecto
@@ -67,6 +112,7 @@ DEPLOY RENDER: https://systemlostfound.onrender.com
 └── 📝README.md                   → Documentación del proyecto
 ```
 
+<p align="right"><a href="#-índice">volver arriba ↑</a></p>
 ---
 
 ## 🚀 Arquitectura del Backend
@@ -84,6 +130,7 @@ Ventajas:
 - Ideal para proyectos educativos y de portfolio
 - Muy eficiente en despliegues cloud
 
+<p align="right"><a href="#-índice">volver arriba ↑</a></p>
 ---
 
 ## 📁 Persistencia de Datos
@@ -92,7 +139,10 @@ Archivos:
 - **users.json** → usuarios, roles, password hasheada, estado de baneo
 - **items.json** → publicaciones vinculadas al userId
 
+
 Gestionado por `dataService.ts` con escritura segura.
+
+<p align="right"><a href="#-índice">volver arriba ↑</a></p>
 
 ---
 
@@ -107,6 +157,7 @@ Flujo:
 3. **Cloudinary** sube la imagen
 4. Eliminación automática de imágenes viejas
 
+<p align="right"><a href="#-índice">volver arriba ↑</a></p>
 ---
 
 ## 🔐 Seguridad
@@ -116,6 +167,7 @@ Flujo:
 - Sistema de roles (user / admin)
 - Sistema de baneo inteligente
 
+<p align="right"><a href="#-índice">volver arriba ↑</a></p>
 ---
 
 ## ⚙️ Variables de Entorno
@@ -137,7 +189,7 @@ cd backend
 npm install
 npm run dev
 ```
-
+<p align="right"><a href="#-índice">volver arriba ↑</a></p>
 ---
 
 ## 🛣️ API
@@ -162,6 +214,21 @@ Authorization: Bearer <token>
 - GET /api/users  
 - PATCH /api/users/:id/ban  
 - DELETE /api/users/:id  
+
+
+#### *📋 Ejemplo de Respuesta (POST /api/users/login)*
+
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+        "id": "36bbf3cd-9f99-417a-90cc-9b008307a6f1",
+        "username": "gabriela",
+        "role": "user"
+    }
+}
+```
+<p align="right"><a href="#-índice">volver arriba ↑</a></p>
 
 ---
 
