@@ -7,6 +7,15 @@
 import * as auth from './auth.js';
 import * as ui from './ui.js';
 import { renderTab, showAddForm } from './items.js';
+import { toggleTheme, loadTheme } from "./theme.js";
+
+
+// ======================================================
+// 🌗 GESTIÓN DE TEMA (Dark/Light)
+// ======================================================
+window.toggleTheme = toggleTheme;
+loadTheme();
+
 
 // ======================================================
 // 🚀 ESTADO GLOBAL

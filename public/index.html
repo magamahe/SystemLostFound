@@ -1,127 +1,39 @@
 <!doctype html>
 <html lang="es" class="dark">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Encuentra objetos perdidos de forma rápida y segura en nuestra comunidad."
-    />
-    <title>LostFound | Buscador de Objetos Perdidos</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Roboto+Mono:wght@500;700&family=Roboto:wght@400;700;900&display=swap"
-      rel="stylesheet"
-    />
+  <!-- SEO -->
+  <title>Perdidos & Encontrados | Plataforma de Objetos Perdidos</title>
+  <meta name="description" content="Publicá y encontrá objetos perdidos: llaves, documentos, bicicletas, ropa, libros y más. Una comunidad para que todo vuelva a su lugar." />
+  <meta name="keywords" content="objetos perdidos, perdidos y encontrados, lost and found, llaves perdidas, documentos, bicicletas, comunidad" />
+  <meta name="author" content="María Gabriela Martínez Herrero" />
 
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Open Graph (cuando lo compartís en redes) -->
+  <meta property="og:title" content="Perdidos & Encontrados" />
+  <meta property="og:description" content="Publicá lo que perdiste o encontraste y ayudá a que todo vuelva a su lugar." />
+  <meta property="og:image" content="https://tusitio.com/uploads/hero.webp" />
+  <meta property="og:type" content="website" />
 
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              darkBg: "#121212",
-              darkCard: "#1e1e1e",
-              neonPurple: "#bb86fc",
-            },
-            // Agregamos las familias a Tailwind para usarlas como clases
-            fontFamily: {
-              sans: ["Roboto", "sans-serif"],
-              condensed: ["Roboto Condensed", "sans-serif"],
-              mono: ["Roboto Mono", "monospace"],
-            },
-          },
-        },
-      };
-    </script>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="./favicon.png" />
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Roboto+Mono:wght@500;700&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet"/>
 
-    <style>
-      /* Aplicamos Roboto como fuente base */
-      body {
-        font-family: "Roboto", sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
+  <!-- Tailwind (solo mientras no lo buildées) -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-      /* Estilo para los títulos de las tablas */
-      .font-condensed {
-        font-family: "Roboto Condensed", sans-serif;
-      }
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
 
-      /* Estilo para Cód. Cliente */
-      .font-roboto-mono {
-        font-family: "Roboto Mono", monospace;
-      }
+  <!-- Tu CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
 
-      /* Ribbon */
-      .ribbon {
-        position: absolute;
-        top: 15px;
-        right: -35px;
-        transform: rotate(45deg);
-        width: 150px;
-        text-align: center;
-        font-weight: bold;
-        font-size: 0.75rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-      }
-
-      /* Skeleton shimmer */
-      @keyframes shimmer {
-        0% {
-          background-position: -200% 0;
-        }
-        100% {
-          background-position: 200% 0;
-        }
-      }
-      .skeleton-shimmer {
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.05),
-          transparent
-        );
-        background-size: 200% 100%;
-        animation: shimmer 1.5s infinite;
-      }
-
-      /* Tooltip */
-      [data-tooltip] {
-        position: relative;
-        cursor: pointer;
-      }
-      [data-tooltip]::after {
-        content: attr(data-tooltip);
-        position: absolute;
-        bottom: 125%;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(0, 0, 0, 0.85);
-        color: #fff;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        font-size: 0.7rem;
-        white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s;
-        z-index: 50;
-      }
-      [data-tooltip]:hover::after {
-        opacity: 1;
-      }
-    </style>
-  </head>
 
   <body
     class="bg-gray-100 dark:bg-darkBg text-gray-900 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300"
