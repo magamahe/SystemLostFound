@@ -6,7 +6,7 @@ node_modules/
 backend/dist/
 
 # Secretos
-backend/.env
+backend/src/.env
 
 # Archivos de sistema
 .DS_Store
