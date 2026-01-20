@@ -1,8 +1,14 @@
+//==================================================//
+// 🔐 auth.js - Módulo para manejar autenticación de usuarios
+//==================================================//
+
+// 🔐 IMPORTACIONES
 import { openModal } from './ui.js';
 import { API_URL } from './api.js';
 
+//==============================
 // --- MOSTRAR LOGIN ---
-// --- MOSTRAR LOGIN ---
+//==============================
 export function showLoginForm() {
     openModal();
     const body = document.getElementById("modal-body");
@@ -52,7 +58,9 @@ export function showLoginForm() {
     };
 }
 
+//==============================
 // --- MOSTRAR REGISTRO ---
+//==============================
 export function showRegisterForm() {
     const body = document.getElementById("modal-body");
     body.innerHTML = `
@@ -103,6 +111,9 @@ export function showRegisterForm() {
     };
 }
 
+//==============================
+// --- LOGOUT ---
+//==============================
 export function logout() {
     localStorage.clear();
     location.reload();

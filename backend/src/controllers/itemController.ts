@@ -1,13 +1,17 @@
+//==================== ITEM CONTROLLER ==========================//
+
+// importaciones de librerías y módulos
 import { Request, Response } from 'express';
 import { DataService } from '../services/dataService';
 import { Item } from '../models/item';
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
 import { v2 as cloudinary } from 'cloudinary';
-// @ts-ignore
+// @ts-ignore para evitar error de tipos en streamifier que se usa para subir imágenes a Cloudinary
 import streamifier from 'streamifier';
 
-// --- CONFIGURACIÓN DE CLOUDINARY ---
+
+// ===================== CONFIGURACIÓN DE CLOUDINARY ======================//
 // Usamos process.env para que en Render solo tengas que cargar los valores en la pestaña "Environment"
 cloudinary.config({ 
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
@@ -45,7 +49,12 @@ const optimizeAndUpload = async (file: any): Promise<string> => {
     });
 };
 
+//===============================================================================================//
+
+
+//========================================================================
 // --- CREATE ITEM ---
+//========================================================================
 export const createItem = async (req: any, res: Response) => {
     try {
         const { title, description, type, phone } = req.body;
@@ -77,7 +86,9 @@ export const createItem = async (req: any, res: Response) => {
     }
 };
 
+//========================================================================
 // --- GET ITEMS ---
+//========================================================================
 export const getItems = async (req: Request, res: Response) => {
     try {
         const items = await DataService.getItems();
@@ -87,7 +98,9 @@ export const getItems = async (req: Request, res: Response) => {
     }
 };
 
+//========================================================================
 // --- UPDATE ITEM STATUS (ADMIN) ---
+//========================================================================
 export const updateItemStatus = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -105,7 +118,9 @@ export const updateItemStatus = async (req: Request, res: Response) => {
     }
 };
 
+//========================================================================
 // --- UPDATE ITEM (OWNER/ADMIN) ---
+//========================================================================
 export const updateItem = async (req: any, res: Response) => {
     try {
         const { id } = req.params;
@@ -152,7 +167,10 @@ export const updateItem = async (req: any, res: Response) => {
         res.status(500).json({ message: "Error al actualizar" });
     }
 };
+
+//========================================================================
 // --- DELETE ITEM ---
+//========================================================================
 export const deleteItem = async (req: any, res: Response) => {
     try {
         const { id } = req.params;

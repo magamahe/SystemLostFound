@@ -1,10 +1,17 @@
+//==============DATA SERVICE================//
+// Servicio para manejar la lectura y escritura de datos en archivos JSON
+// Ubicación de los archivos: backend/src/data/users.json y backend/src/data/items.json
+
+// Importamos los módulos necesarios
 import fs from 'fs/promises';
 import { existsSync, mkdirSync } from 'fs'; // Necesitamos la versión síncrona para chequeos rápidos
 import path from 'path';
 import { User } from '../models/user';
 import { Item } from '../models/item';
 
+//============================================
 // --- CONFIGURACIÓN DE RUTAS ABSOLUTAS ---
+//============================================
 // process.cwd() nos asegura que siempre partimos de la carpeta raíz del proyecto en Render
 const DATA_DIR = path.join(process.cwd(), 'src', 'data');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
@@ -23,6 +30,9 @@ const ensureFilesExist = async () => {
   }
 };
 
+//============================================
+// --- SERVICIO DE DATOS ---
+//============================================
 export const DataService = {
   // Obtiene el arreglo completo de usuarios
   async getUsers(): Promise<User[]> {
@@ -36,13 +46,17 @@ export const DataService = {
     }
   },
 
-  // Guarda el arreglo completo de usuarios
-  async saveUsers(users: User[]): Promise<void> {
+  //====================================================
+    // Guarda el arreglo completo de usuarios
+  //====================================================
+    async saveUsers(users: User[]): Promise<void> {
     await ensureFilesExist();
     await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2));
   },
 
+  //====================================================
   // Obtiene el arreglo completo de ítems
+  //====================================================
   async getItems(): Promise<Item[]> {
     try {
       await ensureFilesExist();
@@ -54,7 +68,9 @@ export const DataService = {
     }
   },
 
+  //====================================================
   // Guarda el arreglo completo de ítems
+  //====================================================
   async saveItems(items: Item[]): Promise<void> {
     await ensureFilesExist();
     await fs.writeFile(ITEMS_FILE, JSON.stringify(items, null, 2));

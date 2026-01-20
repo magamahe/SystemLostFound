@@ -1,6 +1,13 @@
+//==================================================//
+// 📡 api.js - Módulo para interactuar con la API del backend
+//==================================================//
+
+// 📡 CONSTANTE DE URL DE LA API
 export const API_URL = window.location.origin + "/api";
 
+//=================================================//
 // 📡 CARGAR ÍTEMS DESDE BACKEND
+//=================================================//
 export async function loadItems() {
   try {
     const res = await fetch(`${API_URL}/items`);

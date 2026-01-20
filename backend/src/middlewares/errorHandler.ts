@@ -1,5 +1,11 @@
+//==================== ERROR HANDLER MIDDLEWARE ==========================//
+
+//importaciones de librerías y módulos
 import { Request, Response, NextFunction } from 'express';
 
+//==================================================================
+// --- ERROR HANDLER ---
+//==================================================================
 // Este middleware captura cualquier error que ocurra en las rutas
 export const errorHandler = (
   err: any, 
@@ -19,6 +25,10 @@ export const errorHandler = (
     stack: process.env.NODE_ENV === 'production' ? null : err.stack,
   });
 };
+
+//==================================================================
+// --- NOT FOUND HANDLER ---
+//==================================================================
 // Middleware para rutas no encontradas
 export const notFoundHandler = (req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({

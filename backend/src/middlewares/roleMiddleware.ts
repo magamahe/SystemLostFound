@@ -1,5 +1,12 @@
+//==================== ROLE MIDDLEWARE ==========================//
+
+//importaciones de librerías y módulos
 import { Response, NextFunction } from 'express';
 
+
+//==================================================================
+// --- VERIFICAR ADMIN ---
+//==================================================================
 // Usamos 'any' para req para que reconozca la propiedad .user que inyectó el token
 export const isAdmin = (req: any, res: Response, next: NextFunction) => {
     
@@ -14,3 +21,4 @@ export const isAdmin = (req: any, res: Response, next: NextFunction) => {
         message: "Acceso denegado: Se requieren permisos de administrador" 
     });
 };
+

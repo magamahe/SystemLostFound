@@ -1,3 +1,8 @@
+//==================================================//
+// 🗂️ items.js - Módulo para gestión y renderizado de ítems
+//==================================================//
+
+// 🗂️ IMPORTACIONES
 import { openModal, closeModal } from './ui.js';
 import { API_URL } from './api.js';
 
@@ -304,6 +309,10 @@ async function renderAdminUsersTab(parent) {
     }
 }
 
+
+// ======================================================
+// 🛠️ ACTUALIZAR TABLA DE USUARIO
+//=====================================================
 function updateUsersTable() {
     const tbody = document.getElementById("users-tbody");
     if (!tbody) return;
@@ -402,6 +411,9 @@ window.updateStatus = async (id, newStatus) => {
     } catch (e) { console.error(e); }
 };
 
+// ======================================================
+// 👥 Toggle de suspensión de usuario
+// ======================================================
 window.toggleBan = async (id) => {
     const user = usersList.find(u => u.id === id);
     if (!user || !confirm(`¿Cambiar estado de suspensión para ${user.username}?`)) return;
@@ -419,6 +431,9 @@ window.toggleBan = async (id) => {
     } catch (e) { console.error(e); }
 };
 
+// ======================================================
+// 🗑️ Editar ítem
+// ======================================================
 window.editItem = async (id) => {
     const item = allItems.find(i => String(i.id) === String(id));
     if (!item) return;
@@ -468,6 +483,10 @@ window.editItem = async (id) => {
     };
 };
 
+
+// ======================================================
+// 🗑️ Eliminar ítem
+// ======================================================
 window.deleteItem = async (id) => {
     // Cartel de confirmación antes de proceder
     const confirmar = confirm("⚠️ ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.");
@@ -494,6 +513,10 @@ window.deleteItem = async (id) => {
     }
 };
 
+
+// ======================================================
+// ➕ Mostrar formulario de nuevo ítem
+// ======================================================
 export function showAddForm() {
     const token = localStorage.getItem("token");
     openModal();

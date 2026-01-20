@@ -1,3 +1,6 @@
+//==================== USER CONTROLLER ==========================//
+
+// importaciones de librerías y módulos
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -6,6 +9,7 @@ import { User } from '../models/user';
 import { v4 as uuidv4 } from 'uuid';
 import { v2 as cloudinary } from 'cloudinary'; // Importamos Cloudinary
 
+//==================== CONFIGURACIÓN DE CLOUDINARY ======================//
 // Función auxiliar para extraer el public_id de la URL de Cloudinary
 const getPublicIdFromUrl = (url: string) => {
     const parts = url.split('/');
@@ -14,8 +18,12 @@ const getPublicIdFromUrl = (url: string) => {
     const publicId = lastPart.split('.')[0]; 
     return `${folder}/${publicId}`;
 };
+//===============================================================================================//
 
-// Register Controller
+
+//=====================================================
+// --------------Register Controller------------------
+//=====================================================
 export const register = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
@@ -46,7 +54,9 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-// Login Controller
+//=====================================================
+//  ----------------Login Controller ------------------
+//=====================================================
 export const login = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
@@ -89,7 +99,9 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-// Get All Users (Solo Admin)
+//=====================================================
+// -----------Get All Users Controller(Solo Admin)-----
+//=====================================================
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await DataService.getUsers();
@@ -105,7 +117,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-// Delete User Controller (Corregido para Render/Cloudinary)
+//=====================================================
+// Delete User Controller (para Render/Cloudinary)
+//=====================================================
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -148,7 +162,10 @@ export const deleteUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error al eliminar" });
   }
 };
-// Toggle User Ban
+
+//=====================================================
+//  -----------Toggle User Ban Controller (Admin)------
+//=====================================================
 export const toggleUserBan = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

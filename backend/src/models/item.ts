@@ -1,7 +1,13 @@
+//==================== ITEM MODEL ==========================//
+
+
 // para el dia de mañana poder reutilizar estos tipos en otros archivos
 export type Role = "admin" | "user";
 export type ItemStatus = "pending" | "approved" | "rejected";
 
+//==========================
+// --- ITEM INTERFACE ---
+//=========================
 export interface Item {
   id: string;
   title: string;

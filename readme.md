@@ -7,7 +7,7 @@ Este proyecto es el núcleo de una plataforma de reportes comunitarios para la b
 Está diseñado para ser **rápido, seguro y liviano**, ideal para desplegarse en servicios como **Render, Vercel o Railway**.
 
 
-DEPLOY RENDER: https://systemlostfound.onrender.com/
+DEPLOY RENDER: https://systemlostfound.onrender.com
 ---
 
 ## 🧱 Estructura del Proyecto

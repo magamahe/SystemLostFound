@@ -1,6 +1,12 @@
+//==================== AUTH MIDDLEWARE ==========================//
+
+//importaciones de librerías y módulos
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
+//==================================================================
+// --- VERIFICAR TOKEN ---
+//==================================================================
 // Usamos 'any' en req para poder añadir la propiedad .user sin que TypeScript proteste
 export const verifyToken = (req: any, res: Response, next: NextFunction) => {
   // 1. Obtenemos el token del header

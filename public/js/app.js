@@ -1,3 +1,9 @@
+// ======================================================
+// 📱 app.js - Módulo principal de la aplicación
+// ======================================================
+
+
+// 📡 IMPORTACIONES DE MÓDULOS
 import * as auth from './auth.js';
 import * as ui from './ui.js';
 import { renderTab, showAddForm } from './items.js';
@@ -5,9 +11,12 @@ import { renderTab, showAddForm } from './items.js';
 // ======================================================
 // 🚀 ESTADO GLOBAL
 // ======================================================
-// Importante hoy 16 de enero: Centralizamos el usuario en window para los módulos
+// Referencia rápida al usuario actual (si existe)
 window.currentUser = JSON.parse(localStorage.getItem("user")) || null;
 
+// ======================================================
+// 🛠️ INICIALIZACIÓN DE LA APLICACIÓN
+// ======================================================
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Configuración de Tema (Dark por defecto como pediste)
     document.documentElement.classList.add("dark");

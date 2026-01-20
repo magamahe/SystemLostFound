@@ -1,3 +1,6 @@
+//==================== UPLOAD MIDDLEWARE ==========================//
+
+//importaciones de librerías y módulos
 import multer from 'multer';
 
 // --- CONFIGURACIÓN DE MEMORIA ---
@@ -14,6 +17,9 @@ const fileFilter = (req: any, file: any, cb: any) => {
     }
 };
 
+//================================================================
+// -- MIDDLEWARE DE SUBIDA ---
+//================================================================
 export const upload = multer({ 
     storage,
     fileFilter,

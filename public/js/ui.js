@@ -1,15 +1,26 @@
+// ======================================================
+// 🖥️ UI.JS - Módulo para gestión de la interfaz de usuario
+// ======================================================
+
+
+//============================================
+//fc para abrir y cerrar modales
+//============================================
 export function openModal() {
     const modal = document.getElementById("modal-container");
     if (modal) modal.classList.remove("hidden");
 }
 
+//============================================
+//fc para cerrar modales
+//============================================
 export function closeModal() {
     const modal = document.getElementById("modal-container");
     if (modal) modal.classList.add("hidden");
 }
 
-// ====// ======================================================
-// 🧭 NAVBAR
+//======================================================
+// fc actualizar navbar según estado de usuario
 // ======================================================
 export function updateNavbar(user) {
   const sec = document.getElementById("user-section");
@@ -56,7 +67,11 @@ export function renderFloatingButton(user, action) {
   document.body.appendChild(btn);
 }
 
+//=====================================================
+// 🌓 TOGGLE DE MODO OSCURO
+//=====================================================
 // 1. Lógica de inicialización (Corre apenas carga la web)
+// ======================================================
 const initTheme = () => {
     const savedTheme = localStorage.getItem('theme');
     
@@ -69,7 +84,9 @@ const initTheme = () => {
     }
 };
 
+//======================================================
 // 2. La función que dispara el botón
+// ======================================================
 window.toggleTheme = () => {
     const html = document.documentElement;
     const isDark = html.classList.toggle('dark'); // Quita o pone la clase 'dark'
