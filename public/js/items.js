@@ -3,8 +3,8 @@
 //==================================================//
 
 // 🗂️ IMPORTACIONES
-import { openModal, closeModal } from './ui.js';
-import { API_URL } from './api.js';
+import { openModal, closeModal } from "./ui.js";
+import { API_URL } from "./api.js";
 
 // Variables de estado del módulo
 let allItems = [];
@@ -14,24 +14,32 @@ let usersList = [];
 // 🧱 CREADOR DE TARJETAS (ESTILO GLASS & NEÓN)
 // ======================================================
 export function createCard(item, canEdit) {
-    const currentUser = window.currentUser;
-    const card = document.createElement("article");
-    
-    // Clase card-pop del CSS y efecto de borde sutil
-    card.className = "card-pop relative glass rounded-3xl overflow-hidden border border-white/10 flex flex-col group transition-all h-full";
+  const currentUser = window.currentUser;
+  const card = document.createElement("article");
 
-    const fecha = item.createdAt ? new Date(item.createdAt).toLocaleDateString("es-AR") : "---";
-    const imageUrl = item.image 
-        ? (item.image.startsWith('http') ? item.image : `${API_URL}${item.image}`) 
-        : "";
+  // Clase card-pop del CSS y efecto de borde sutil
+  card.className =
+    "card-pop relative glass rounded-3xl overflow-hidden border border-white/10 flex flex-col group transition-all h-full";
 
-    const statusLabels = {
-        pending: '<span class="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">Pendiente</span>',
-        approved: '<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">Aprobado</span>',
-        rejected: '<span class="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">Rechazado</span>',
-    };
+  const fecha = item.createdAt
+    ? new Date(item.createdAt).toLocaleDateString("es-AR")
+    : "---";
+  const imageUrl = item.image
+    ? item.image.startsWith("http")
+      ? item.image
+      : `${API_URL}${item.image}`
+    : "";
 
-    card.innerHTML = `
+  const statusLabels = {
+    pending:
+      '<span class="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">Pendiente</span>',
+    approved:
+      '<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">Aprobado</span>',
+    rejected:
+      '<span class="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">Rechazado</span>',
+  };
+
+  card.innerHTML = `
         <div class="absolute top-0 right-0 z-20 overflow-hidden w-28 h-28 pointer-events-none">
             <div class="${item.type === "lost" ? "bg-gradient-to-r from-red-600 to-pink-600" : "bg-gradient-to-r from-emerald-500 to-teal-600"} text-white text-[9px] font-black text-center py-1 absolute top-4 -right-8 w-32 rotate-45 uppercase tracking-tighter shadow-lg">
                 ${item.type === "lost" ? "Buscado" : "Hallado"}
@@ -41,109 +49,144 @@ export function createCard(item, canEdit) {
         <div class="relative h-52 w-full bg-slate-900 flex items-center justify-center overflow-hidden">
             ${imageUrl ? `<img src="${imageUrl}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">` : `<i class="fas fa-box-open fa-3x text-slate-700"></i>`}
             
-            ${currentUser?.role === "admin" ? `
+            ${
+              currentUser?.role === "admin"
+                ? `
                 <div class="absolute bottom-2 left-2 glass text-white text-[9px] font-mono px-2 py-1 rounded-md border border-white/10" title="Cód. Cliente">
                     USER: #${item.userId}
                 </div>
-            ` : ""}
+            `
+                : ""
+            }
         </div>
 
         <div class="p-6 flex-1 flex flex-col">
             <div class="flex justify-between items-center mb-3">
                 <span class="text-[10px] text-slate-500 font-mono"><i class="far fa-calendar-alt mr-1"></i> ${fecha}</span>
-                ${statusLabels[item.status] || ''}
+                ${statusLabels[item.status] || ""}
             </div>
             
             <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-2 group-hover:text-neonPurple transition-colors">${item.title}</h3>
             <p class="text-[13px] text-slate-400 italic mb-6 line-clamp-2 leading-relaxed font-light font-sans">${item.description}</p>
             
             <div class="mt-auto flex flex-col gap-3">
-                <a href="https://wa.me/${item.phone.replace(/\D/g,'')}" target="_blank" 
-                   class="bg-gradient-to-r from-neonPurple/20 to-neonPink/20 text-white border border-white/10 text-center py-3 rounded-2xl font-black text-[10px] tracking-widest hover:from-neonPurple hover:to-neonPink hover:text-white transition-all duration-300 uppercase shadow-lg">
-                    <i class="fab fa-whatsapp mr-2 text-sm"></i> Contactar
+                <a href="https://wa.me/${item.phone.replace(/\D/g, "")}" target="_blank" 
+                    class="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-[10px] tracking-widest transition-all duration-300 uppercase shadow-lg
+                    /* MODO CLARO (Por defecto): Colores fuertes para que se vea sobre blanco */
+                    bg-gradient-to-r from-neonPurple to-neonPink text-white border-none
+                    /* MODO OSCURO: Estilo sutil con transparencia */
+                    dark:from-neonPurple/20 dark:to-neonPink/20 dark:text-white dark:border dark:border-white/10 
+                    /* Efectos hover */
+                    hover:scale-[1.02] hover:shadow-neonPurple/40 active:scale-95">
+                     <i class="fab fa-whatsapp text-sm"></i> Contactar
                 </a>
 
                 <div class="flex justify-center gap-2">
-                    ${currentUser?.role === "admin" && item.status === "pending" ? `
+                    ${
+                      currentUser?.role === "admin" && item.status === "pending"
+                        ? `
                         <button onclick="updateStatus('${item.id}', 'approved')" class="bg-emerald-500/20 text-emerald-400 p-3 rounded-xl hover:bg-emerald-500 hover:text-white transition-all"><i class="fas fa-check"></i></button>
                         <button onclick="updateStatus('${item.id}', 'rejected')" class="bg-orange-500/20 text-orange-400 p-3 rounded-xl hover:bg-orange-500 hover:text-white transition-all"><i class="fas fa-times"></i></button>
-                    ` : ""}
-                    ${canEdit || currentUser?.role === "admin" ? `
+                    `
+                        : ""
+                    }
+                    ${
+                      canEdit || currentUser?.role === "admin"
+                        ? `
                         <button onclick="editItem('${item.id}')" class="bg-blue-500/10 text-blue-400 p-3 rounded-xl hover:bg-blue-500 hover:text-white transition-all"><i class="fas fa-edit"></i></button>
                         <button onclick="deleteItem('${item.id}')" class="bg-red-500/10 text-red-400 p-3 rounded-xl hover:bg-red-500 hover:text-white transition-all"><i class="fas fa-trash"></i></button>
-                    ` : ""}
+                    `
+                        : ""
+                    }
                 </div>
             </div>
         </div>
     `;
-    return card;
+  return card;
 }
 
 // ======================================================
 // 📡 CARGA DE DATOS (CON CACHÉ PARA EVITAR LAG)
 // ======================================================
 export async function loadItems(forceRefresh = false) {
-    // Si ya tenemos datos y no forzamos recarga, los devolvemos al toque
-    if (allItems.length > 0 && !forceRefresh) return allItems;
+  // Si ya tenemos datos y no forzamos recarga, los devolvemos al toque
+  if (allItems.length > 0 && !forceRefresh) return allItems;
 
-    try {
-        const res = await fetch(`${API_URL}/items`);
-        if (!res.ok) throw new Error("Error en servidor");
-        allItems = await res.json();
-        return allItems;
-    } catch (e) {
-        console.error("🚨 Error cargando items:", e);
-        return allItems || []; 
-    }
+  try {
+    const res = await fetch(`${API_URL}/items`);
+    if (!res.ok) throw new Error("Error en servidor");
+    allItems = await res.json();
+    return allItems;
+  } catch (e) {
+    console.error("🚨 Error cargando items:", e);
+    return allItems || [];
+  }
 }
 
 // ======================================================
 // 🧭 NAVEGACIÓN MODERNA
 // ======================================================
 export async function renderTab(tabName) {
-    const container = document.getElementById("cards-container");
-    if (!container) return;
+  const container = document.getElementById("cards-container");
+  if (!container) return;
 
-    const currentUser = window.currentUser;
-    container.innerHTML = "";
+  const currentUser = window.currentUser;
+  container.innerHTML = "";
 
-    // Nav de pestañas con estilo Glass
-    const tabsNav = document.createElement("div");
-    tabsNav.className = "col-span-full flex gap-4 mb-10 overflow-x-auto pb-2 no-scrollbar";
+  // Nav de pestañas con estilo Glass
+  const tabsNav = document.createElement("div");
+  tabsNav.className =
+    "col-span-full flex gap-4 mb-10 overflow-x-auto pb-2 no-scrollbar";
 
-    let tabs = [{ id: "general", label: "Tablón", icon: "fa-fire" }];
-    if (currentUser) {
-        if (currentUser.role === "admin") {
-            tabs.push({ id: "admin-items", label: "Moderación", icon: "fa-shield-halved" });
-            tabs.push({ id: "admin-users", label: "Usuarios", icon: "fa-users-gear" });
-        } else {
-            tabs.push({ id: "my-items", label: "Mis Avisos", icon: "fa-rocket" });
-        }
+  let tabs = [{ id: "general", label: "Tablón", icon: "fa-fire" }];
+  if (currentUser) {
+    if (currentUser.role === "admin") {
+      tabs.push({
+        id: "admin-items",
+        label: "Moderación",
+        icon: "fa-shield-halved",
+      });
+      tabs.push({
+        id: "admin-users",
+        label: "Usuarios",
+        icon: "fa-users-gear",
+      });
+    } else {
+      tabs.push({ id: "my-items", label: "Mis Avisos", icon: "fa-rocket" });
     }
+  }
 
-    tabsNav.innerHTML = tabs.map(t => `
+  tabsNav.innerHTML = tabs
+    .map(
+      (t) => `
         <button id="btn-tab-${t.id}" class="flex items-center py-3 px-6 rounded-full text-xs font-black uppercase tracking-widest transition-all ${tabName === t.id ? "bg-neonPurple text-white shadow-lg shadow-neonPurple/20" : "glass text-slate-500 hover:text-white hover:border-white/30"}">
             <i class="fas ${t.icon} mr-3"></i>${t.label}
         </button>
-    `).join("");
+    `,
+    )
+    .join("");
 
-    container.appendChild(tabsNav);
-    tabs.forEach(t => document.getElementById(`btn-tab-${t.id}`).onclick = () => renderTab(t.id));
+  container.appendChild(tabsNav);
+  tabs.forEach(
+    (t) =>
+      (document.getElementById(`btn-tab-${t.id}`).onclick = () =>
+        renderTab(t.id)),
+  );
 
-    // Skeleton moderno con gradiente animado
-    const contentDiv = document.createElement("div");
-    contentDiv.className = "col-span-full";
-    contentDiv.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 animate-pulse">
-        ${Array(4).fill('<div class="h-80 glass rounded-3xl"></div>').join('')}
+  // Skeleton moderno con gradiente animado
+  const contentDiv = document.createElement("div");
+  contentDiv.className = "col-span-full";
+  contentDiv.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 animate-pulse">
+        ${Array(4).fill('<div class="h-80 glass rounded-3xl"></div>').join("")}
     </div>`;
-    container.appendChild(contentDiv);
+  container.appendChild(contentDiv);
 
-    await loadItems();
-    
-    if (tabName === "general") renderGeneralTab(contentDiv);
-    else if (tabName === "my-items") renderMyItemsTab(contentDiv);
-    else if (tabName === "admin-items") renderAdminItemsTab(contentDiv);
-    else if (tabName === "admin-users") renderAdminUsersTab(contentDiv);
+  await loadItems();
+
+  if (tabName === "general") renderGeneralTab(contentDiv);
+  else if (tabName === "my-items") renderMyItemsTab(contentDiv);
+  else if (tabName === "admin-items") renderAdminItemsTab(contentDiv);
+  else if (tabName === "admin-users") renderAdminUsersTab(contentDiv);
 }
 
 // ======================================================
@@ -154,7 +197,7 @@ export async function renderTab(tabName) {
 // 🌍 TABLÓN GENERAL CON BUSCADOR GLASS
 // ======================================================
 function renderGeneralTab(parent) {
-    parent.innerHTML = `
+  parent.innerHTML = `
         <div class="flex flex-col md:flex-row gap-6 mb-12">
             <div class="relative flex-1 group">
                 <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-neonPurple transition-colors"></i>
@@ -169,44 +212,47 @@ function renderGeneralTab(parent) {
         <div id="grid-gen" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
     `;
 
-    const update = () => {
-        const grid = document.getElementById("grid-gen");
-        const term = document.getElementById("search-gen").value.toLowerCase();
-        const typeFilter = document.getElementById("filter-type-gen").value;
-        grid.innerHTML = "";
+  const update = () => {
+    const grid = document.getElementById("grid-gen");
+    const term = document.getElementById("search-gen").value.toLowerCase();
+    const typeFilter = document.getElementById("filter-type-gen").value;
+    grid.innerHTML = "";
 
-        const filtered = allItems.filter(i => 
-            i.status === "approved" && 
-            (i.title.toLowerCase().includes(term) || i.description.toLowerCase().includes(term)) && 
-            (typeFilter === "all" || i.type === typeFilter)
-        );
+    const filtered = allItems.filter(
+      (i) =>
+        i.status === "approved" &&
+        (i.title.toLowerCase().includes(term) ||
+          i.description.toLowerCase().includes(term)) &&
+        (typeFilter === "all" || i.type === typeFilter),
+    );
 
-        if (filtered.length === 0) {
-            grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-50 uppercase font-black">No hay resultados</div>`;
-            return;
-        }
-        filtered.forEach(item => grid.appendChild(createCard(item, false)));
-    };
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-50 uppercase font-black">No hay resultados</div>`;
+      return;
+    }
+    filtered.forEach((item) => grid.appendChild(createCard(item, false)));
+  };
 
-    document.getElementById("search-gen").oninput = update;
-    document.getElementById("filter-type-gen").onchange = update;
-    update();
+  document.getElementById("search-gen").oninput = update;
+  document.getElementById("filter-type-gen").onchange = update;
+  update();
 }
-
 
 // ======================================================
 // 👤 RENDERS DE PESTAÑAS DE USUARIO
 // ======================================================
 function renderMyItemsTab(parent) {
-    parent.innerHTML = `<div id="grid-my" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>`;
-    const grid = document.getElementById("grid-my");
-    const myFiltered = allItems.filter(i => i.userId === window.currentUser?.id);
+  parent.innerHTML = `<div id="grid-my" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>`;
+  const grid = document.getElementById("grid-my");
+  const myFiltered = allItems.filter(
+    (i) => i.userId === window.currentUser?.id,
+  );
 
-    if (myFiltered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-50 uppercase font-black">No tienes publicaciones aún</div>`;
-        return;
-    }
-    myFiltered.forEach(item => grid.appendChild(createCard(item, true)));
+  if (myFiltered.length === 0) {
+    grid.innerHTML = `<div class="col-span-full py-20 text-center opacity-50 uppercase font-black">No tienes publicaciones aún</div>`;
+    return;
+  }
+  myFiltered.forEach((item) => grid.appendChild(createCard(item, true)));
 }
 
 // ======================================================
@@ -216,7 +262,7 @@ function renderMyItemsTab(parent) {
 // 🛠️ GESTIÓN DE ANUNCIOS (ADMIN) - CON FILTROS DE ESTADO
 // ======================================================
 function renderAdminItemsTab(parent) {
-    parent.innerHTML = `
+  parent.innerHTML = `
         <div class="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
             <h2 class="text-xl font-black dark:text-white uppercase italic">Moderación de Anuncios</h2>
             
@@ -235,54 +281,59 @@ function renderAdminItemsTab(parent) {
         <div id="grid-admin" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
     `;
 
-    const updateAdminGrid = () => {
-        const grid = document.getElementById("grid-admin");
-        const statusFilter = document.getElementById("filter-status-admin").value;
-        const searchTerm = document.getElementById("search-admin").value.toLowerCase();
-        
-        grid.innerHTML = "";
+  const updateAdminGrid = () => {
+    const grid = document.getElementById("grid-admin");
+    const statusFilter = document.getElementById("filter-status-admin").value;
+    const searchTerm = document
+      .getElementById("search-admin")
+      .value.toLowerCase();
 
-        const filtered = allItems.filter(i => {
-            const matchesStatus = statusFilter === "all" || i.status === statusFilter;
-            const matchesSearch = i.title.toLowerCase().includes(searchTerm) || 
-                                 String(i.userId).includes(searchTerm) ||
-                                 String(i.id).includes(searchTerm);
-            return matchesStatus && matchesSearch;
-        });
+    grid.innerHTML = "";
 
-        if (filtered.length === 0) {
-            grid.innerHTML = `
+    const filtered = allItems.filter((i) => {
+      const matchesStatus = statusFilter === "all" || i.status === statusFilter;
+      const matchesSearch =
+        i.title.toLowerCase().includes(searchTerm) ||
+        String(i.userId).includes(searchTerm) ||
+        String(i.id).includes(searchTerm);
+      return matchesStatus && matchesSearch;
+    });
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `
                 <div class="col-span-full py-20 text-center opacity-40">
                     <i class="fas fa-folder-open fa-3x mb-4"></i>
                     <p class="font-black uppercase tracking-widest">No hay anuncios que coincidan</p>
                 </div>
             `;
-            return;
-        }
+      return;
+    }
 
-        // Renderizamos las tarjetas (canEdit = true porque es admin)
-        filtered.forEach(item => grid.appendChild(createCard(item, true)));
-    };
+    // Renderizamos las tarjetas (canEdit = true porque es admin)
+    filtered.forEach((item) => grid.appendChild(createCard(item, true)));
+  };
 
-    // Eventos para actualizar la lista en tiempo real
-    document.getElementById("filter-status-admin").onchange = updateAdminGrid;
-    document.getElementById("search-admin").oninput = updateAdminGrid;
+  // Eventos para actualizar la lista en tiempo real
+  document.getElementById("filter-status-admin").onchange = updateAdminGrid;
+  document.getElementById("search-admin").oninput = updateAdminGrid;
 
-    // Ejecución inicial
-    updateAdminGrid();
+  // Ejecución inicial
+  updateAdminGrid();
 }
 // ======================================================
 // 👥 GESTIÓN DE USUARIOS (VERSIÓN COMPLETA CON ESTADÍSTICAS)
 // ======================================================
 async function renderAdminUsersTab(parent) {
-    const token = localStorage.getItem("token");
-    parent.innerHTML = `<div class="py-20 text-center text-gray-500 animate-pulse font-black uppercase italic">Conectando con la base de datos...</div>`;
+  const token = localStorage.getItem("token");
+  parent.innerHTML = `<div class="py-20 text-center text-gray-500 animate-pulse font-black uppercase italic">Conectando con la base de datos...</div>`;
 
-    try {
-        const res = await fetch(`${API_URL}/users`, { headers: { Authorization: `Bearer ${token}` } });
-        usersList = await res.json();
+  try {
+    const res = await fetch(`${API_URL}/users`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    usersList = await res.json();
 
-        parent.innerHTML = `
+    parent.innerHTML = `
             <div class="max-w-7xl mx-auto px-4 py-8">
                 <h2 class="text-2xl font-black dark:text-white uppercase italic mb-8 flex items-center">
                     <i class="fas fa-user-shield mr-3 text-neonPurple"></i> Control de Usuarios
@@ -309,43 +360,57 @@ async function renderAdminUsersTab(parent) {
                 </div>
             </div>
         `;
-        document.getElementById("user-search").oninput = () => updateUsersTable();
-        updateUsersTable();
-    } catch (error) {
-        parent.innerHTML = `<div class="py-20 text-center text-red-500 font-black">Error al conectar con el servidor</div>`;
-    }
+    document.getElementById("user-search").oninput = () => updateUsersTable();
+    updateUsersTable();
+  } catch (error) {
+    parent.innerHTML = `<div class="py-20 text-center text-red-500 font-black">Error al conectar con el servidor</div>`;
+  }
 }
-
 
 // ======================================================
 // 🛠️ ACTUALIZAR TABLA DE USUARIO
 //=====================================================
 function updateUsersTable() {
-    const tbody = document.getElementById("users-tbody");
-    if (!tbody) return;
+  const tbody = document.getElementById("users-tbody");
+  if (!tbody) return;
 
-    const term = document.getElementById("user-search").value.trim().toLowerCase();
-    const filtered = usersList.filter(u => 
-        u.role !== 'admin' && (String(u.id).toLowerCase().includes(term) || u.username.toLowerCase().includes(term))
-    );
+  const term = document
+    .getElementById("user-search")
+    .value.trim()
+    .toLowerCase();
+  const filtered = usersList.filter(
+    (u) =>
+      u.role !== "admin" &&
+      (String(u.id).toLowerCase().includes(term) ||
+        u.username.toLowerCase().includes(term)),
+  );
 
-    // Inicializamos contadores para las métricas globales (la barra inferior)
-    let globalStats = { total: 0, lost: 0, found: 0, pending: 0, approved: 0, rejected: 0 };
+  // Inicializamos contadores para las métricas globales (la barra inferior)
+  let globalStats = {
+    total: 0,
+    lost: 0,
+    found: 0,
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+  };
 
-    tbody.innerHTML = filtered.map(u => {
+  tbody.innerHTML =
+    filtered
+      .map((u) => {
         // Relacionamos los items cargados con cada usuario
-        const userItems = allItems.filter(item => item.userId === u.id);
+        const userItems = allItems.filter((item) => item.userId === u.id);
         const s = {
-            total: userItems.length,
-            lost: userItems.filter(i => i.type === 'lost').length,
-            found: userItems.filter(i => i.type === 'found').length,
-            pending: userItems.filter(i => i.status === 'pending').length,
-            approved: userItems.filter(i => i.status === 'approved').length,
-            rejected: userItems.filter(i => i.status === 'rejected').length
+          total: userItems.length,
+          lost: userItems.filter((i) => i.type === "lost").length,
+          found: userItems.filter((i) => i.type === "found").length,
+          pending: userItems.filter((i) => i.status === "pending").length,
+          approved: userItems.filter((i) => i.status === "approved").length,
+          rejected: userItems.filter((i) => i.status === "rejected").length,
         };
 
         // Sumar al contador global para la fila de abajo
-        Object.keys(globalStats).forEach(k => globalStats[k] += s[k]);
+        Object.keys(globalStats).forEach((k) => (globalStats[k] += s[k]));
 
         return `
         <tr class="hover:bg-gray-800/20 transition-colors border-b border-gray-800/50">
@@ -381,7 +446,9 @@ function updateUsersTable() {
                 </div>
             </td>
         </tr>`;
-    }).join("") + `
+      })
+      .join("") +
+    `
         <tr class="bg-gray-900/80 font-black border-t-2 border-neonPurple/50">
             <td class="p-5 text-[10px] text-neonPurple uppercase tracking-[0.2em] text-center" colspan="2">Métricas Globales de Red</td>
             <td class="p-5" colspan="3">
@@ -404,56 +471,64 @@ function updateUsersTable() {
 // ======================================================
 
 window.updateStatus = async (id, newStatus) => {
-    const token = localStorage.getItem("token");
-    try {
-        const res = await fetch(`${API_URL}/items/${id}/status`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            body: JSON.stringify({ status: newStatus })
-        });
-        if (res.ok) {
-            await loadItems(true); // Forzar refresco
-            renderTab("admin-items");
-        }
-    } catch (e) { console.error(e); }
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${API_URL}/items/${id}/status`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    if (res.ok) {
+      await loadItems(true); // Forzar refresco
+      renderTab("admin-items");
+    }
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 // ======================================================
 // 👥 Toggle de suspensión de usuario
 // ======================================================
 window.toggleBan = async (id) => {
-    const user = usersList.find(u => u.id === id);
-    if (!user || !confirm(`¿Cambiar estado de suspensión para ${user.username}?`)) return;
-    
-    const token = localStorage.getItem("token");
-    try {
-        const res = await fetch(`${API_URL}/users/${id}/ban`, { 
-            method: "PATCH", 
-            headers: { Authorization: `Bearer ${token}` } 
-        });
-        if (res.ok) { 
-            user.isBanned = !user.isBanned; 
-            updateUsersTable(); 
-        }
-    } catch (e) { console.error(e); }
+  const user = usersList.find((u) => u.id === id);
+  if (!user || !confirm(`¿Cambiar estado de suspensión para ${user.username}?`))
+    return;
+
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${API_URL}/users/${id}/ban`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) {
+      user.isBanned = !user.isBanned;
+      updateUsersTable();
+    }
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 // ======================================================
 // 🗑️ Editar ítem
 // ======================================================
 window.editItem = async (id) => {
-    const item = allItems.find(i => String(i.id) === String(id));
-    if (!item) return;
+  const item = allItems.find((i) => String(i.id) === String(id));
+  if (!item) return;
 
-    openModal();
-    document.getElementById("modal-body").innerHTML = `
+  openModal();
+  document.getElementById("modal-body").innerHTML = `
         <h2 class="text-2xl font-black dark:text-white mb-6 uppercase italic">Editar Publicación</h2>
         <form id="edit-form" class="space-y-4">
             <input type="text" id="edit-title" value="${item.title}" placeholder="Título" class="w-full p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white outline-none" required>
             <div class="grid grid-cols-2 gap-4">
                 <select id="edit-type" class="p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white outline-none">
-                    <option value="lost" ${item.type === 'lost' ? 'selected' : ''}>Lo perdí</option>
-                    <option value="found" ${item.type === 'found' ? 'selected' : ''}>Lo encontré</option>
+                    <option value="lost" ${item.type === "lost" ? "selected" : ""}>Lo perdí</option>
+                    <option value="found" ${item.type === "found" ? "selected" : ""}>Lo encontré</option>
                 </select>
                 <input type="text" id="edit-phone" value="${item.phone}" placeholder="WhatsApp" class="p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white outline-none" required>
             </div>
@@ -463,71 +538,79 @@ window.editItem = async (id) => {
         </form>
     `;
 
-    document.getElementById("edit-form").onsubmit = async (e) => {
-        e.preventDefault();
-        const fd = new FormData();
-        fd.append("title", document.getElementById("edit-title").value);
-        fd.append("description", document.getElementById("edit-desc").value);
-        fd.append("type", document.getElementById("edit-type").value);
-        fd.append("phone", document.getElementById("edit-phone").value);
-        const imgFile = document.getElementById("edit-image").files[0];
-        if (imgFile) fd.append("image", imgFile);
+  document.getElementById("edit-form").onsubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData();
+    fd.append("title", document.getElementById("edit-title").value);
+    fd.append("description", document.getElementById("edit-desc").value);
+    fd.append("type", document.getElementById("edit-type").value);
+    fd.append("phone", document.getElementById("edit-phone").value);
+    const imgFile = document.getElementById("edit-image").files[0];
+    if (imgFile) fd.append("image", imgFile);
 
-        const res = await fetch(`${API_URL}/items/${id}`, {
-            method: "PUT",
-            headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` },
-            body: fd
-        });
+    const res = await fetch(`${API_URL}/items/${id}`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      body: fd,
+    });
 
-        if (res.ok) {
-            // AQUÍ EL CARTELITO:
-            alert("✅ Cambios guardados. El anuncio volverá a ser revisado por un administrador.");
-            closeModal();
-            await loadItems(true);
-            const activeTab = document.querySelector('[id^="btn-tab-"].text-neonPurple')?.id.replace('btn-tab-', '') || 'general';
-            renderTab(activeTab);
-        }
-    };
+    if (res.ok) {
+      // AQUÍ EL CARTELITO:
+      alert(
+        "✅ Cambios guardados. El anuncio volverá a ser revisado por un administrador.",
+      );
+      closeModal();
+      await loadItems(true);
+      const activeTab =
+        document
+          .querySelector('[id^="btn-tab-"].text-neonPurple')
+          ?.id.replace("btn-tab-", "") || "general";
+      renderTab(activeTab);
+    }
+  };
 };
-
 
 // ======================================================
 // 🗑️ Eliminar ítem
 // ======================================================
 window.deleteItem = async (id) => {
-    // Cartel de confirmación antes de proceder
-    const confirmar = confirm("⚠️ ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.");
-    
-    if (!confirmar) return; // Si cancela, no hace nada.
+  // Cartel de confirmación antes de proceder
+  const confirmar = confirm(
+    "⚠️ ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.",
+  );
 
-    try {
-        const res = await fetch(`${API_URL}/items/${id}`, {
-            method: "DELETE",
-            headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
-        });
+  if (!confirmar) return; // Si cancela, no hace nada.
 
-        if (res.ok) {
-            alert("🗑️ Publicación eliminada correctamente.");
-            await loadItems(true);
-            const activeTab = document.querySelector('[id^="btn-tab-"].text-neonPurple')?.id.replace('btn-tab-', '') || 'general';
-            renderTab(activeTab);
-        } else {
-            alert("No se pudo eliminar la publicación. Inténtalo de nuevo.");
-        }
-    } catch (e) {
-        console.error(e);
-        alert("Error de conexión al intentar eliminar.");
+  try {
+    const res = await fetch(`${API_URL}/items/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+
+    if (res.ok) {
+      alert("🗑️ Publicación eliminada correctamente.");
+      await loadItems(true);
+      const activeTab =
+        document
+          .querySelector('[id^="btn-tab-"].text-neonPurple')
+          ?.id.replace("btn-tab-", "") || "general";
+      renderTab(activeTab);
+    } else {
+      alert("No se pudo eliminar la publicación. Inténtalo de nuevo.");
     }
+  } catch (e) {
+    console.error(e);
+    alert("Error de conexión al intentar eliminar.");
+  }
 };
-
 
 // ======================================================
 // ➕ Mostrar formulario de nuevo ítem
 // ======================================================
 export function showAddForm() {
-    const token = localStorage.getItem("token");
-    openModal();
-    document.getElementById("modal-body").innerHTML = `
+  const token = localStorage.getItem("token");
+  openModal();
+  document.getElementById("modal-body").innerHTML = `
         <h2 class="text-2xl font-black dark:text-white mb-6 uppercase italic">Nueva Publicación</h2>
         <form id="add-form" class="space-y-4">
             <input type="text" id="add-title" placeholder="Título" class="w-full p-4 rounded-2xl bg-gray-100 dark:bg-gray-800 dark:text-white outline-none" required>
@@ -544,26 +627,26 @@ export function showAddForm() {
         </form>
     `;
 
-    document.getElementById("add-form").onsubmit = async (e) => {
-        e.preventDefault();
-        const fd = new FormData();
-        fd.append("title", document.getElementById("add-title").value);
-        fd.append("description", document.getElementById("add-desc").value);
-        fd.append("type", document.getElementById("add-type").value);
-        fd.append("phone", document.getElementById("add-phone").value);
-        const img = document.getElementById("add-image").files[0];
-        if (img) fd.append("image", img);
+  document.getElementById("add-form").onsubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData();
+    fd.append("title", document.getElementById("add-title").value);
+    fd.append("description", document.getElementById("add-desc").value);
+    fd.append("type", document.getElementById("add-type").value);
+    fd.append("phone", document.getElementById("add-phone").value);
+    const img = document.getElementById("add-image").files[0];
+    if (img) fd.append("image", img);
 
-        const res = await fetch(`${API_URL}/items`, {
-            method: "POST",
-            headers: { Authorization: `Bearer ${token}` },
-            body: fd,
-        });
-        if (res.ok) {
-            alert("¡Publicado! Pendiente de revisión.");
-            closeModal();
-            await loadItems(true);
-            renderTab("my-items");
-        }
-    };
+    const res = await fetch(`${API_URL}/items`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    });
+    if (res.ok) {
+      alert("¡Publicado! Pendiente de revisión.");
+      closeModal();
+      await loadItems(true);
+      renderTab("my-items");
+    }
+  };
 }
