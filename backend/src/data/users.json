@@ -33,5 +33,12 @@
     "password": "$2a$10$esbWApkC1QMhCkhCBur5IuL9z5EXTEP/EZDlANQIwHhL8YK/antTm",
     "role": "user",
     "isBanned": false
+  },
+  {
+    "id": "3a8e68d0-4eb1-46a8-90c7-5888b18d4461",
+    "username": "pedro",
+    "password": "$2a$10$0vD2yBz55Ayq23tXkw6gW.doXsHN9702vCMb0UsNolN67/iSm6YzW",
+    "role": "user",
+    "isBanned": false
   }
 ]

@@ -11,23 +11,12 @@
     "createdAt": "2026-01-19T19:41:30.893Z"
   },
   {
-    "id": "ea76cade-6d3d-447c-a71f-a218c635a607",
-    "title": "gato",
-    "description": "Gato bebé blanco en la zona del Parque Mariano Moreno. ",
-    "type": "lost",
-    "phone": "1211324",
-    "status": "rejected",
-    "userId": "912d973f-fb34-4d29-9e32-732356692569",
-    "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768851739/trabajo_final_m3/nftrwauyqdm3lgrzg4aw.webp",
-    "createdAt": "2026-01-19T19:42:19.322Z"
-  },
-  {
     "id": "f3628d16-cdc9-479f-82e8-286f1dd4d195",
     "title": "Cuadrilla para Cosecha",
     "description": "Necesito para el dia lunes, zona Rama Caida. Llamar urgente",
     "type": "lost",
     "phone": "1211324",
-    "status": "pending",
+    "status": "approved",
     "userId": "912d973f-fb34-4d29-9e32-732356692569",
     "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768852061/trabajo_final_m3/hqx2kpo0ijumzbgxgm75.webp",
     "createdAt": "2026-01-19T19:43:22.188Z"
@@ -57,12 +46,34 @@
   {
     "id": "7bcc5f9a-c60b-42dc-959f-424d8631c481",
     "title": "Llaves perdidas",
-    "description": "Cerca de la plaza",
+    "description": "Cerca de la plaza San MArtin",
     "type": "lost",
     "phone": "123456",
     "status": "pending",
     "userId": "ed52e3c1-aebf-4d15-a018-4b5708b1ae08",
     "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768863391/trabajo_final_m3/aulufhb525pzuck6pkuw.webp",
     "createdAt": "2026-01-19T22:56:31.297Z"
+  },
+  {
+    "id": "601dd049-11a7-4dff-85ef-b9c190e18aeb",
+    "title": "gato",
+    "description": "gato pardo en jaula",
+    "type": "found",
+    "phone": "26046777755",
+    "status": "approved",
+    "userId": "3a8e68d0-4eb1-46a8-90c7-5888b18d4461",
+    "image": "https://res.cloudinary.com/ddw8vcsl0/image/upload/v1768935948/trabajo_final_m3/fcc4ldtlj8c6bswaxckv.webp",
+    "createdAt": "2026-01-20T19:05:48.421Z"
+  },
+  {
+    "id": "a79d0308-ba10-44e7-8838-200ea0c8dead",
+    "title": "camperita",
+    "description": "432432423",
+    "type": "found",
+    "phone": "2232432432",
+    "status": "rejected",
+    "userId": "3a8e68d0-4eb1-46a8-90c7-5888b18d4461",
+    "image": "",
+    "createdAt": "2026-01-20T19:15:02.379Z"
   }
 ]

@@ -11,12 +11,14 @@ let allItems = [];
 let usersList = [];
 
 // ======================================================
-// 🧱 CREADOR DE TARJETAS
+// 🧱 CREADOR DE TARJETAS (ESTILO GLASS & NEÓN)
 // ======================================================
 export function createCard(item, canEdit) {
     const currentUser = window.currentUser;
     const card = document.createElement("article");
-    card.className = "relative bg-white dark:bg-darkCard rounded-3xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 flex flex-col group transition-all h-full";
+    
+    // Clase card-pop del CSS y efecto de borde sutil
+    card.className = "card-pop relative glass rounded-3xl overflow-hidden border border-white/10 flex flex-col group transition-all h-full";
 
     const fecha = item.createdAt ? new Date(item.createdAt).toLocaleDateString("es-AR") : "---";
     const imageUrl = item.image 
@@ -24,46 +26,51 @@ export function createCard(item, canEdit) {
         : "";
 
     const statusLabels = {
-        pending: '<span class="bg-yellow-500/20 text-yellow-500 px-2 py-0.5 rounded text-[8px] font-bold uppercase">Pendiente</span>',
-        approved: '<span class="bg-green-500/20 text-green-500 px-2 py-0.5 rounded text-[8px] font-bold uppercase">Aprobado</span>',
-        rejected: '<span class="bg-red-500/20 text-red-500 px-2 py-0.5 rounded text-[8px] font-bold uppercase">Rechazado</span>',
+        pending: '<span class="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">Pendiente</span>',
+        approved: '<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">Aprobado</span>',
+        rejected: '<span class="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">Rechazado</span>',
     };
 
     card.innerHTML = `
         <div class="absolute top-0 right-0 z-20 overflow-hidden w-28 h-28 pointer-events-none">
-            <div class="${item.type === "lost" ? "bg-red-600" : "bg-green-600"} text-white text-[10px] font-black text-center py-1 absolute top-4 -right-8 w-32 rotate-45 uppercase">
-                ${item.type === "lost" ? "Buscado" : "Encontrado"}
+            <div class="${item.type === "lost" ? "bg-gradient-to-r from-red-600 to-pink-600" : "bg-gradient-to-r from-emerald-500 to-teal-600"} text-white text-[9px] font-black text-center py-1 absolute top-4 -right-8 w-32 rotate-45 uppercase tracking-tighter shadow-lg">
+                ${item.type === "lost" ? "Buscado" : "Hallado"}
             </div>
         </div>
-        <div class="relative h-48 w-full bg-white dark:bg-gray-900 flex items-center justify-center overflow-hidden">
-            ${imageUrl ? `<img src="${imageUrl}" class="w-full h-full object-cover">` : `<i class="fas fa-box-open fa-3x text-gray-700/50"></i>`}
+
+        <div class="relative h-52 w-full bg-slate-900 flex items-center justify-center overflow-hidden">
+            ${imageUrl ? `<img src="${imageUrl}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">` : `<i class="fas fa-box-open fa-3x text-slate-700"></i>`}
             
             ${currentUser?.role === "admin" ? `
-                <div class="absolute bottom-2 left-2 bg-black/70 text-white text-[9px] font-mono px-2 py-1 rounded-md border border-white/20 backdrop-blur-sm" title="ID del usuario que publicó">
-                    USER ID: #${item.userId}
+                <div class="absolute bottom-2 left-2 glass text-white text-[9px] font-mono px-2 py-1 rounded-md border border-white/10" title="Cód. Cliente">
+                    USER: #${item.userId}
                 </div>
             ` : ""}
         </div>
-        <div class="p-5 flex-1 flex flex-col">
+
+        <div class="p-6 flex-1 flex flex-col">
             <div class="flex justify-between items-center mb-3">
-                <span class="text-[10px] text-gray-400 font-bold uppercase"><i class="far fa-calendar-alt mr-1"></i> ${fecha}</span>
+                <span class="text-[10px] text-slate-500 font-mono"><i class="far fa-calendar-alt mr-1"></i> ${fecha}</span>
                 ${statusLabels[item.status] || ''}
             </div>
-            <h3 class="text-lg font-black dark:text-white uppercase mb-2">${item.title}</h3>
-            <p class="text-[12px] text-gray-300 italic mb-4 line-clamp-2">${item.description}</p>
             
-            <div class="mt-auto flex flex-col gap-2">
-                <a href="https://wa.me/${item.phone.replace(/\D/g,'')}" target="_blank" class="bg-neonPurple/10 text-neonPurple text-center py-2 rounded-xl font-black text-[11px] hover:bg-neonPurple hover:text-black transition-colors">
-                    WHATSAPP: ${item.phone}
+            <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-2 group-hover:text-neonPurple transition-colors">${item.title}</h3>
+            <p class="text-[13px] text-slate-400 italic mb-6 line-clamp-2 leading-relaxed font-light font-sans">${item.description}</p>
+            
+            <div class="mt-auto flex flex-col gap-3">
+                <a href="https://wa.me/${item.phone.replace(/\D/g,'')}" target="_blank" 
+                   class="bg-gradient-to-r from-neonPurple/20 to-neonPink/20 text-white border border-white/10 text-center py-3 rounded-2xl font-black text-[10px] tracking-widest hover:from-neonPurple hover:to-neonPink hover:text-white transition-all duration-300 uppercase shadow-lg">
+                    <i class="fab fa-whatsapp mr-2 text-sm"></i> Contactar
                 </a>
+
                 <div class="flex justify-center gap-2">
                     ${currentUser?.role === "admin" && item.status === "pending" ? `
-                        <button onclick="updateStatus('${item.id}', 'approved')" class="bg-green-500 p-2 rounded-lg text-white hover:scale-110 transition-transform"><i class="fas fa-check"></i></button>
-                        <button onclick="updateStatus('${item.id}', 'rejected')" class="bg-orange-500 p-2 rounded-lg text-white hover:scale-110 transition-transform"><i class="fas fa-times"></i></button>
+                        <button onclick="updateStatus('${item.id}', 'approved')" class="bg-emerald-500/20 text-emerald-400 p-3 rounded-xl hover:bg-emerald-500 hover:text-white transition-all"><i class="fas fa-check"></i></button>
+                        <button onclick="updateStatus('${item.id}', 'rejected')" class="bg-orange-500/20 text-orange-400 p-3 rounded-xl hover:bg-orange-500 hover:text-white transition-all"><i class="fas fa-times"></i></button>
                     ` : ""}
                     ${canEdit || currentUser?.role === "admin" ? `
-                        <button onclick="editItem('${item.id}')" class="bg-blue-500/20 text-blue-500 p-2 rounded-lg hover:bg-blue-500 hover:text-white transition-all"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteItem('${item.id}')" class="bg-red-500/20 text-red-500 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all"><i class="fas fa-trash"></i></button>
+                        <button onclick="editItem('${item.id}')" class="bg-blue-500/10 text-blue-400 p-3 rounded-xl hover:bg-blue-500 hover:text-white transition-all"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteItem('${item.id}')" class="bg-red-500/10 text-red-400 p-3 rounded-xl hover:bg-red-500 hover:text-white transition-all"><i class="fas fa-trash"></i></button>
                     ` : ""}
                 </div>
             </div>
@@ -91,54 +98,48 @@ export async function loadItems(forceRefresh = false) {
 }
 
 // ======================================================
-// 🧭 NAVEGACIÓN (OPTIMIZADA)
+// 🧭 NAVEGACIÓN MODERNA
 // ======================================================
 export async function renderTab(tabName) {
     const container = document.getElementById("cards-container");
     if (!container) return;
 
-    // 1. Renderizar Estructura (Tabs) INMEDIATAMENTE
     const currentUser = window.currentUser;
     container.innerHTML = "";
 
+    // Nav de pestañas con estilo Glass
     const tabsNav = document.createElement("div");
-    tabsNav.className = "col-span-full flex border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto gap-8";
+    tabsNav.className = "col-span-full flex gap-4 mb-10 overflow-x-auto pb-2 no-scrollbar";
 
-    let tabs = [{ id: "general", label: "TABLÓN GENERAL", icon: "fa-globe" }];
+    let tabs = [{ id: "general", label: "Tablón", icon: "fa-fire" }];
     if (currentUser) {
         if (currentUser.role === "admin") {
-            tabs.push({ id: "admin-items", label: "GESTIÓN ANUNCIOS", icon: "fa-tasks" });
-            tabs.push({ id: "admin-users", label: "USUARIOS", icon: "fa-users" });
+            tabs.push({ id: "admin-items", label: "Moderación", icon: "fa-shield-halved" });
+            tabs.push({ id: "admin-users", label: "Usuarios", icon: "fa-users-gear" });
         } else {
-            tabs.push({ id: "my-items", label: "MIS ANUNCIOS", icon: "fa-user" });
+            tabs.push({ id: "my-items", label: "Mis Avisos", icon: "fa-rocket" });
         }
     }
 
     tabsNav.innerHTML = tabs.map(t => `
-        <button id="btn-tab-${t.id}" class="pb-4 px-4 text-sm md:text-base font-bold uppercase tracking-wide transition-all whitespace-nowrap ${tabName === t.id ? "text-neonPurple border-b-4 border-neonPurple" : "text-gray-400 hover:text-white"}">
-            <i class="fas ${t.icon} mr-2"></i>${t.label}
+        <button id="btn-tab-${t.id}" class="flex items-center py-3 px-6 rounded-full text-xs font-black uppercase tracking-widest transition-all ${tabName === t.id ? "bg-neonPurple text-white shadow-lg shadow-neonPurple/20" : "glass text-slate-500 hover:text-white hover:border-white/30"}">
+            <i class="fas ${t.icon} mr-3"></i>${t.label}
         </button>
     `).join("");
 
     container.appendChild(tabsNav);
-    
-    // Asignar eventos de clic
-    tabs.forEach(t => {
-        document.getElementById(`btn-tab-${t.id}`).onclick = () => renderTab(t.id);
-    });
+    tabs.forEach(t => document.getElementById(`btn-tab-${t.id}`).onclick = () => renderTab(t.id));
 
-    // 2. Crear zona de contenido con Skeleton Loader
+    // Skeleton moderno con gradiente animado
     const contentDiv = document.createElement("div");
     contentDiv.className = "col-span-full";
-    contentDiv.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-pulse">
-        ${Array(4).fill('<div class="h-64 bg-gray-200 dark:bg-gray-800 rounded-3xl"></div>').join('')}
+    contentDiv.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 animate-pulse">
+        ${Array(4).fill('<div class="h-80 glass rounded-3xl"></div>').join('')}
     </div>`;
     container.appendChild(contentDiv);
 
-    // 3. Cargar datos en background (aquí es donde evitamos el Violation)
     await loadItems();
     
-    // 4. Renderizar el contenido real según la pestaña
     if (tabName === "general") renderGeneralTab(contentDiv);
     else if (tabName === "my-items") renderMyItemsTab(contentDiv);
     else if (tabName === "admin-items") renderAdminItemsTab(contentDiv);
@@ -149,17 +150,23 @@ export async function renderTab(tabName) {
 // 🧩 RENDERS DE CONTENIDO
 // ======================================================
 
+// ======================================================
+// 🌍 TABLÓN GENERAL CON BUSCADOR GLASS
+// ======================================================
 function renderGeneralTab(parent) {
     parent.innerHTML = `
-        <div class="flex flex-col md:flex-row gap-4 mb-8">
-            <input type="text" id="search-gen" placeholder="Buscar por título o descripción..." class="flex-1 p-4 rounded-2xl bg-white dark:bg-gray-800 dark:text-white border border-gray-200 dark:border-gray-700 outline-none">
-            <select id="filter-type-gen" class="p-4 rounded-2xl bg-white dark:bg-gray-800 dark:text-white border border-gray-200 dark:border-gray-700 outline-none">
-                <option value="all">🌍 Todos</option>
-                <option value="lost">🚩 Buscados</option>
-                <option value="found">✅ Encontrados</option>
+        <div class="flex flex-col md:flex-row gap-6 mb-12">
+            <div class="relative flex-1 group">
+                <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-neonPurple transition-colors"></i>
+                <input type="text" id="search-gen" placeholder="¿Qué estás buscando?" class="w-full pl-14 pr-6 py-5 rounded-3xl glass border-none text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-neonPurple/50 transition-all">
+            </div>
+            <select id="filter-type-gen" class="px-8 py-5 rounded-3xl glass border-none text-white outline-none focus:ring-2 focus:ring-neonPurple/50 font-bold uppercase text-xs tracking-widest">
+                <option value="all">🌍 Todo</option>
+                <option value="lost">🚩 Perdidos</option>
+                <option value="found">✅ Hallados</option>
             </select>
         </div>
-        <div id="grid-gen" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        <div id="grid-gen" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
     `;
 
     const update = () => {

@@ -2,66 +2,52 @@
 // 📱 app.js - Módulo principal de la aplicación
 // ======================================================
 
-
-// 📡 IMPORTACIONES DE MÓDULOS
 import * as auth from './auth.js';
 import * as ui from './ui.js';
 import { renderTab, showAddForm } from './items.js';
-import { toggleTheme, loadTheme } from "./theme.js";
-
-
-// ======================================================
-// 🌗 GESTIÓN DE TEMA (Dark/Light)
-// ======================================================
-window.toggleTheme = toggleTheme;
-loadTheme();
 
 
 // ======================================================
 // 🚀 ESTADO GLOBAL
 // ======================================================
-// Referencia rápida al usuario actual (si existe)
 window.currentUser = JSON.parse(localStorage.getItem("user")) || null;
 
 // ======================================================
 // 🛠️ INICIALIZACIÓN DE LA APLICACIÓN
 // ======================================================
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Configuración de Tema (Dark por defecto como pediste)
-    document.documentElement.classList.add("dark");
+    
+    // 1. Cargar Tema (Dark por defecto)
+    ui.loadTheme();
 
-    // 2. Referencia rápida al usuario
     const user = window.currentUser;
 
-    // 3. Inicializar Interfaz Básica (Navbar)
+    // 2. Inicializar Interfaz (Navbar y Botón Flotante)
     ui.updateNavbar(user);
     
-    // 4. Renderizar Botón Flotante (+)
-    // Si el usuario existe, el botón abrirá el formulario de publicación
-    ui.renderFloatingButton(user, () => {
-        showAddForm();
-    });
+    if (user) {
+        ui.renderFloatingButton(user, () => {
+            if (navigator.vibrate) navigator.vibrate(10);
+            showAddForm();
+        });
+    }
 
-    // 5. INICIALIZAR EL TABLÓN (Carga automática)
-    // En lugar de cargar los ítems manualmente, usamos el sistema de tabs.
-    // Esto asegura que se cree el buscador, los filtros y el grid.
+    // 3. Inicializar el tablón de anuncios
     renderTab("general");
 
-    // 6. DELEGACIÓN DE CLICS (Eventos Globales)
+    // 4. DELEGACIÓN DE CLICS (Para elementos dinámicos)
     document.addEventListener("click", (e) => {
         
-        // --- AUTH ---
-        // Abrir Login desde Navbar
+        // --- LOGIN / LOGOUT ---
         if (e.target.closest("#login-btn-nav")) {
             auth.showLoginForm();
         }
 
-        // Logout
         if (e.target.id === "logout-btn") {
             auth.logout();
         }
 
-        // Switchear entre formularios dentro del modal
+        // --- NAVEGACIÓN DENTRO DEL MODAL ---
         if (e.target.id === "btn-to-reg") {
             auth.showRegisterForm();
         }
@@ -69,10 +55,15 @@ document.addEventListener("DOMContentLoaded", () => {
             auth.showLoginForm();
         }
 
-        // --- UI ---
-        // Cerrar Modal (X o clic en el fondo oscuro)
-        if (e.target.closest("#close-modal") || e.target.id === "modal-overlay") {
+        // --- CIERRE DE MODAL ---
+        // Verifica que el ID coincida con el botón X que pusimos en el HTML
+        if (e.target.closest("#btn-close-modal") || e.target.id === "modal-container") {
             ui.closeModal();
+        }
+
+        // --- CAMBIO DE TEMA ---
+        if (e.target.closest("#theme-toggle")) {
+            ui.toggleTheme();
         }
     });
 });
