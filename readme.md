@@ -2,7 +2,7 @@
 ---
 <div align="center">
 
-  <img src="./public/uploads/presentacion.webp" alt="Logo Perdidos y Encontrados" width="100%">
+  <img src="./public/uploads/presentacion.webp" alt="Logo Perdidos y Encontrados" width="300">
 
   <h1>🐾 Perdidos & Encontrados</h1>
   <h2>— API Backend / Frontend —</h2>
