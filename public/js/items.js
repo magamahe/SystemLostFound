@@ -13,6 +13,9 @@ let usersList = [];
 // ======================================================
 // 🧱 CREADOR DE TARJETAS (ESTILO GLASS & NEÓN)
 // ======================================================
+// ======================================================
+// 🧱 CREADOR DE TARJETAS (VERSIÓN ADMIN PRO)
+// ======================================================
 export function createCard(item, canEdit) {
   const currentUser = window.currentUser;
   const card = document.createElement("article");
@@ -24,10 +27,9 @@ export function createCard(item, canEdit) {
   const fecha = item.createdAt
     ? new Date(item.createdAt).toLocaleDateString("es-AR")
     : "---";
+    
   const imageUrl = item.image
-    ? item.image.startsWith("http")
-      ? item.image
-      : `${API_URL}${item.image}`
+    ? (item.image.startsWith("http") ? item.image : `${API_URL}${item.image}`)
     : "";
 
   const statusLabels = {
@@ -49,15 +51,19 @@ export function createCard(item, canEdit) {
         <div class="relative h-52 w-full bg-slate-900 flex items-center justify-center overflow-hidden">
             ${imageUrl ? `<img src="${imageUrl}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">` : `<i class="fas fa-box-open fa-3x text-slate-700"></i>`}
             
-            ${
-              currentUser?.role === "admin"
-                ? `
-                <div class="absolute bottom-2 left-2 glass text-white text-[9px] font-mono px-2 py-1 rounded-md border border-white/10" title="Cód. Cliente">
-                    USER: #${item.userId}
+            ${currentUser?.role === "admin" ? `
+                <div class="absolute bottom-2 left-2 bg-black/80 backdrop-blur-md text-white text-[10px] font-mono px-3 py-1.5 rounded-lg border border-white/20 shadow-2xl z-30 cursor-pointer group/id flex items-center gap-2" 
+                     title="Click para copiar ID"
+                     onclick="navigator.clipboard.writeText('${item.userId}').then(() => { 
+                        const icon = this.querySelector('i');
+                        icon.className = 'fas fa-check text-emerald-400';
+                        setTimeout(() => { icon.className = 'far fa-copy text-slate-400'; }, 1000);
+                     })">
+                    <span class="text-neonPurple font-black uppercase text-[8px]">User:</span> 
+                    <span class="font-bold tracking-tight">#${item.userId}</span>
+                    <i class="far fa-copy text-slate-400 group-hover/id:text-white transition-colors"></i>
                 </div>
-            `
-                : ""
-            }
+            ` : ""}
         </div>
 
         <div class="p-6 flex-1 flex flex-col">
@@ -72,39 +78,28 @@ export function createCard(item, canEdit) {
             <div class="mt-auto flex flex-col gap-3">
                 <a href="https://wa.me/${item.phone.replace(/\D/g, "")}" target="_blank" 
                     class="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-[10px] tracking-widest transition-all duration-300 uppercase shadow-lg
-                    /* MODO CLARO (Por defecto): Colores fuertes para que se vea sobre blanco */
                     bg-gradient-to-r from-neonPurple to-neonPink text-white border-none
-                    /* MODO OSCURO: Estilo sutil con transparencia */
                     dark:from-neonPurple/20 dark:to-neonPink/20 dark:text-white dark:border dark:border-white/10 
-                    /* Efectos hover */
                     hover:scale-[1.02] hover:shadow-neonPurple/40 active:scale-95">
                      <i class="fab fa-whatsapp text-sm"></i> Contactar
                 </a>
 
                 <div class="flex justify-center gap-2">
-                    ${
-                      currentUser?.role === "admin" && item.status === "pending"
-                        ? `
-                        <button onclick="updateStatus('${item.id}', 'approved')" class="bg-emerald-500/20 text-emerald-400 p-3 rounded-xl hover:bg-emerald-500 hover:text-white transition-all"><i class="fas fa-check"></i></button>
-                        <button onclick="updateStatus('${item.id}', 'rejected')" class="bg-orange-500/20 text-orange-400 p-3 rounded-xl hover:bg-orange-500 hover:text-white transition-all"><i class="fas fa-times"></i></button>
-                    `
-                        : ""
-                    }
-                    ${
-                      canEdit || currentUser?.role === "admin"
-                        ? `
-                        <button onclick="editItem('${item.id}')" class="bg-blue-500/10 text-blue-400 p-3 rounded-xl hover:bg-blue-500 hover:text-white transition-all"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteItem('${item.id}')" class="bg-red-500/10 text-red-400 p-3 rounded-xl hover:bg-red-500 hover:text-white transition-all"><i class="fas fa-trash"></i></button>
-                    `
-                        : ""
-                    }
+                    ${currentUser?.role === "admin" && item.status === "pending" ? `
+                        <button onclick="updateStatus('${item.id}', 'approved')" class="bg-emerald-500/20 text-emerald-400 p-3 rounded-xl hover:bg-emerald-500 hover:text-white transition-all" title="Aprobar"><i class="fas fa-check"></i></button>
+                        <button onclick="updateStatus('${item.id}', 'rejected')" class="bg-orange-500/20 text-orange-400 p-3 rounded-xl hover:bg-orange-500 hover:text-white transition-all" title="Rechazar"><i class="fas fa-times"></i></button>
+                    ` : ""}
+                    
+                    ${canEdit || currentUser?.role === "admin" ? `
+                        <button onclick="editItem('${item.id}')" class="bg-blue-500/10 text-blue-400 p-3 rounded-xl hover:bg-blue-500 hover:text-white transition-all" title="Editar"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteItem('${item.id}')" class="bg-red-500/10 text-red-400 p-3 rounded-xl hover:bg-red-500 hover:text-white transition-all" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    ` : ""}
                 </div>
             </div>
         </div>
     `;
   return card;
 }
-
 // ======================================================
 // 📡 CARGA DE DATOS (CON CACHÉ PARA EVITAR LAG)
 // ======================================================
