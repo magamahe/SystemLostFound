@@ -32,27 +32,24 @@ Está diseñado para ser **rápido, seguro y liviano**, ideal para desplegarse e
 
 ---
 
-
+<a name="indice"></a>
 ## 📍 Índice
 - [📍 Índice](#-índice)
 - [🧱 Estructura del Proyecto](#-estructura-del-proyecto)
-- [volver arriba ↑](#volver-arriba-)
 - [🚀 Arquitectura del Backend](#-arquitectura-del-backend)
-- [volver arriba ↑](#volver-arriba--1)
 - [📁 Persistencia de Datos](#-persistencia-de-datos)
 - [🖼️ Gestión de Imágenes](#️-gestión-de-imágenes)
-- [volver arriba ↑](#volver-arriba--2)
 - [🔐 Seguridad](#-seguridad)
-- [volver arriba ↑](#volver-arriba--3)
 - [⚙️ Variables de Entorno](#️-variables-de-entorno)
 - [🛠️ Instalación](#️-instalación)
-- [volver arriba ↑](#volver-arriba--4)
 - [🛣️ API](#️-api)
   - [Auth](#auth)
   - [Items](#items)
   - [Usuarios (solo ADMIN)](#usuarios-solo-admin)
     - [*📋 Ejemplo de Respuesta (POST /api/users/login)*](#-ejemplo-de-respuesta-post-apiuserslogin)
 - [👩‍💻 Autora](#-autora)
+
+---
 ---
 
 ## 🧱 Estructura del Proyecto
@@ -113,6 +110,8 @@ Está diseñado para ser **rápido, seguro y liviano**, ideal para desplegarse e
 ```
 
 <p align="right"><a href="#-índice">volver arriba ↑</a></p>
+<!-- omit from toc -->
+
 ---
 
 ## 🚀 Arquitectura del Backend
@@ -131,6 +130,8 @@ Ventajas:
 - Muy eficiente en despliegues cloud
 
 <p align="right"><a href="#-índice">volver arriba ↑</a></p>
+<!-- omit from toc -->
+
 ---
 
 ## 📁 Persistencia de Datos
@@ -143,6 +144,7 @@ Archivos:
 Gestionado por `dataService.ts` con escritura segura.
 
 <p align="right"><a href="#-índice">volver arriba ↑</a></p>
+<!-- omit from toc -->
 
 ---
 
@@ -158,6 +160,8 @@ Flujo:
 4. Eliminación automática de imágenes viejas
 
 <p align="right"><a href="#-índice">volver arriba ↑</a></p>
+<!-- omit from toc -->
+
 ---
 
 ## 🔐 Seguridad
@@ -168,6 +172,8 @@ Flujo:
 - Sistema de baneo inteligente
 
 <p align="right"><a href="#-índice">volver arriba ↑</a></p>
+<!-- omit from toc -->
+
 ---
 
 ## ⚙️ Variables de Entorno
@@ -189,7 +195,10 @@ cd backend
 npm install
 npm run dev
 ```
+
 <p align="right"><a href="#-índice">volver arriba ↑</a></p>
+<!-- omit from toc -->
+
 ---
 
 ## 🛣️ API
@@ -228,7 +237,9 @@ Authorization: Bearer <token>
     }
 }
 ```
+
 <p align="right"><a href="#-índice">volver arriba ↑</a></p>
+<!-- omit from toc -->
 
 ---
 
