@@ -1,12 +1,12 @@
-
 # Dependencias
 node_modules/
 
-# Compilación
-backend/dist/
+# Compilación (JS generado)
+dist/
 
-# Secretos
-backend/src/.env
+# Secretos y Configuración
+.env
 
 # Archivos de sistema
 .DS_Store
+Thumbs.db
